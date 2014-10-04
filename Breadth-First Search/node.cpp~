@@ -42,7 +42,7 @@ struct node * MakeGraph() {
 
 
 	cnode->left_child = bnode;
-	delete bnode;
+delete bnode;
 	
 	return cnode;
 }

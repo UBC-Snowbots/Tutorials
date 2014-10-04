@@ -19,4 +19,4 @@ void ConnectNodes(struct node * parent, struct node * lchild, struct node * rchi
 void GenerateGraph(struct node * start_node);
 
 // placeholder
-struct node * MakeGraph();
+void MakeGraph(struct node * temp);

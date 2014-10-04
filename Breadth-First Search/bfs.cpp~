@@ -21,8 +21,11 @@ bool CheckForGoal(struct node* node, int goal);
 
 int main() {
 
+	struct node * temp;
+	MakeGraph(temp);
+
 	BFS(CreateEmptyNode(), 7);
-	BFS(MakeGraph(), 6);
+	BFS(temp, 6);
 	return 0;
 }
 
