@@ -7,13 +7,12 @@ struct Node {
 	int value;
 };
 
-Node* NodeConstructor(Node* p, Node* lc, Node* rc, int val) {
-	Node* this_node = 0;
+void NodeConstructor(Node* this_node, Node* p, Node* lc, Node* rc, int val) {
 	(*this_node).parent = p;
 	(*this_node).left_child = lc;
 	(*this_node).right_child = rc;
 	(*this_node).value = val;
-	return this_node;
+	return;
 }
 
 void BFS(Node* starting_node, int goal_val);
