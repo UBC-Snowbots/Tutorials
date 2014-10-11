@@ -1,27 +1,43 @@
-//#include "bfs.h"
+#include "node.h"
 #include <queue>
 #include <iostream>
 
 using namespace std;
 
-struct node {
-	struct node * parent;
-	struct node * left_child;
-	struct node * right_child;
-	int value;
-};
 
+// VARIABLES
 
 queue<struct node *> frontier;	// queue of nodes to check to find goal
 
 
+// initiates function names, output type, and inputs
 
+void BFS(struct node * starting_node, int goal_val);
+
+bool CheckForGoal(struct node* node, int goal);
+
+
+// MAIN FUNCTION
+
+int main() {
+	struct node * new_node;
+	CreateEmptyNode(new_node);
+	BFS(new_node, 7);
+	BFS(MakeGraph(), 6);
+	return 0;
+	
+}
+
+
+// FUNCTIONS
+
+// checks whether node contains goal value
 bool CheckForGoal(struct node* node, int goal) {
 	if (node->value == goal) { return true; }
 	else { return false; }
 }
 
-
+// this is the breadth-first search algorithm
 void BFS(struct node * starting_node, int goal_val) {
 
 	// check for null graph
@@ -35,7 +51,7 @@ void BFS(struct node * starting_node, int goal_val) {
 	
 	struct node* currentNode = 0;
 	
-	// 
+	// search through graph using bfs until goal is found or end of graph
 	while (!frontier.empty()) {
 	
 		currentNode = frontier.front();
@@ -46,26 +62,12 @@ void BFS(struct node * starting_node, int goal_val) {
 		}
 		
 		else { 
-			frontier.push(currentNode->left_child);
-			frontier.push(currentNode->right_child);
+			if (currentNode->left_child) { frontier.push(currentNode->left_child); }
+			if (currentNode->right_child) { frontier.push(currentNode->right_child); }
 			frontier.pop(); 
 		}
 	}
 	
 	cout << "No goal found" << endl;
 	return;
-}
-
-
-
-int main() {
-
-struct node cnode;
-cnode.parent = 0;
-cnode.left_child = 0;
-cnode.right_child = 0;
-cnode.value = 7;
-
-	BFS(&cnode, 7);
-	return 0;
 }
