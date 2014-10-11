@@ -4,26 +4,26 @@
 
 using namespace std;
 
-struct Node {
-	Node* parent;
-	Node* left_child;
-	Node* right_child;
+struct node {
+	struct node * parent;
+	struct node * left_child;
+	struct node * right_child;
 	int value;
 };
 
-queue<struct Node*> frontier;	// queue of nodes to check to find goal
 
-struct Node cnode;
-cnode.parent = 0;
-cnode.left_child = 0;
-cnode.right_child = 0;
-cnode.value = 7;
+queue<struct node *> frontier;	// queue of nodes to check to find goal
 
 
 
+bool CheckForGoal(struct node* node, int goal) {
+	if (node->value == goal) { return true; }
+	else { return false; }
+}
 
-void BFS(struct Node* starting_node, int goal_val) {
-		cout << "here" << endl;
+
+void BFS(struct node * starting_node, int goal_val) {
+
 	// check for null graph
 	if (starting_node == 0) {
 		cout << "Graph does not exist" << endl;
@@ -33,7 +33,7 @@ void BFS(struct Node* starting_node, int goal_val) {
 	// otherwise put it into the frontier
 	frontier.push(starting_node);
 	
-	Node* currentNode = 0;
+	struct node* currentNode = 0;
 	
 	// 
 	while (!frontier.empty()) {
@@ -56,12 +56,16 @@ void BFS(struct Node* starting_node, int goal_val) {
 	return;
 }
 
-bool CheckForGoal(Node* node, int goal) {
-	if (node->value == goal) { return true; }
-	else { return false; }
-}
+
 
 int main() {
+
+struct node cnode;
+cnode.parent = 0;
+cnode.left_child = 0;
+cnode.right_child = 0;
+cnode.value = 7;
+
 	BFS(&cnode, 7);
 	return 0;
 }
