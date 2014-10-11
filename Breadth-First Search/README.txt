@@ -1,4 +1,4 @@
-Doesn't compile yet, still needs fixing up.
+Doesn't compile yet, still needs fixing up in the node.h and node.cpp files.
 
 An example of breadth first search.
 
