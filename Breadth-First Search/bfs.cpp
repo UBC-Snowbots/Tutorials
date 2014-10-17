@@ -20,12 +20,9 @@ bool CheckForGoal(struct node* node, int goal);
 // MAIN FUNCTION
 
 int main() {
-	struct node * new_node;
-	CreateEmptyNode(new_node);
-	BFS(new_node, 7);
+	BFS(CreateEmptyNode(), 7);
 	BFS(MakeGraph(), 6);
 	return 0;
-	
 }
 
 

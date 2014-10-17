@@ -1,5 +1,3 @@
-#include "node.cpp"
-
 #pragma once
 
 // creates a node structure
@@ -12,7 +10,7 @@ struct node {
 
 
 // create a new node
-void CreateEmptyNode(struct node * new_node);
+struct node * CreateEmptyNode();
 
 // attach parent and children
 void ConnectNodes(struct node * parent, struct node * lchild, struct node * rchild);
@@ -21,4 +19,4 @@ void ConnectNodes(struct node * parent, struct node * lchild, struct node * rchi
 void GenerateGraph(struct node * start_node);
 
 // placeholder
-struct node* MakeGraph();
+struct node * MakeGraph();
