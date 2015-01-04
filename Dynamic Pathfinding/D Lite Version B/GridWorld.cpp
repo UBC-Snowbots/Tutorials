@@ -14,33 +14,25 @@ GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
 
 	//INIT
 	km = 0;
-	
+	oldGoal = goal;
 	start->rhs = 0;
 	
 	start->isOpen = true;
 	start->h = calculateH(start);
-	start->key = std::pair<double,double>(start->h, 0);
+	start->key = GridWorld::KeyPair(start->h, 0);
 	open.push_back(start);
 }
 
 void GridWorld::replan(){
 	int counter = 0;
-	oldGoal = goal;
+	
+	//Having a wall during normal search doesn't seem to cause any problems
+	//getTileAt(3,3)->cost = INFINITY;
 	computeShortestPath();
 
 	while(start != goal){
 		std::cout << "Iteration: "<< counter << std::endl;
-		if(counter == 0){
-			//updateCost(3,3,INFINITY);
-		}
-		if(counter == 1){
-			//updateCost(3,3,10);
-			//Uncomment the 3 lines below to completely block the start
-			//updateCost(3,3,INFINITY);
-			//updateCost(3,4,INFINITY);
-			//updateCost(4,3,INFINITY);
-		}
-
+		
 		if(goal->rhs == INFINITY){
 			std::cout << "\tNO PATH EXIST" << std::endl;
 			break;
@@ -50,38 +42,77 @@ void GridWorld::replan(){
 		if(goal != 0){
 			printf("\tMoved to (%u, %u)\n", goal->x, goal->y);
 		}else{
-			printf("\tError\n");
+			printf("\tError null successor\n");
 			return;
 		}
-		
+
+		if(counter == 0){
+			//printWorld();
+			//updateCost(3,3,10);
+			//printWorld();
+		}
+		if(counter == 1){
+			//updateCost(3,3,10);
+
+			//Uncomment these 3 lines to completly block the goal
+			//updateCost(3,3,INFINITY);
+			//updateCost(3,4,INFINITY);
+			//updateCost(4,3,INFINITY);
+		}
 		counter++;
 	}
 	
 	//Uncomment the line below to print every info about gridworld
-	//printWorld(false);
+	//printWorld();
 }
 
 
-void GridWorld::updateCost(unsigned int x, unsigned int y, double cost){
+void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	Tile* tile = getTileAt(x,y);
 	
 	km += calculateH(oldGoal);
 	oldGoal = goal;
 
-	//std::cout << "Tile at (" << x << ", " << y << ") is undergoing a COST change" << std::endl;
+	//I am aware that the following code below could be refactored by 50%
+	//since it's repeating itself with only a few changes
 
-	double oldCost, newCost;
+	double oldCost = tile->cost;
+	double oldCostToTile, newCostToTile;
 
+	//Update CURRENT by finding its new minimum RHS-value from NEIGHBOURS
 	for (Tile* neighbour : getNeighbours(tile)){
-		oldCost = calculateC(tile, neighbour);
+		tile->cost = oldCost;
+		oldCostToTile = calculateC(tile, neighbour);
 
-		tile->cost = cost;
-		newCost = calculateC(tile, neighbour);
+		tile->cost = newCost;
+		newCostToTile = calculateC(tile, neighbour);
 
-		if (oldCost > newCost){
-			if(neighbour != start && neighbour->rhs > tile->g + newCost){
+		if (oldCostToTile > newCostToTile){
+			if(tile != start && tile->rhs > neighbour->g + newCostToTile){
+				tile->parent = neighbour;
+				tile->rhs = neighbour->g + newCostToTile;
+			}
+		} else if (tile != start && tile->parent == neighbour){
+			TilePair minSucc(getMinSuccessor(tile));
+			tile->rhs = minSucc.second;
+			tile->parent = (tile->rhs == INFINITY ? 0 : minSucc.first);
+		}
+	}
+
+	updateVertex(tile);
+
+	//Update all NEIGHBOURING cells by finding their new min RHS-values from CURRENT
+	for (Tile* neighbour : getNeighbours(tile)){
+		tile->cost = oldCost;
+		oldCostToTile = calculateC(tile, neighbour);
+
+		tile->cost = newCost;
+		newCostToTile = calculateC(tile, neighbour);
+
+		if (oldCostToTile > newCostToTile){
+			if(neighbour != start && neighbour->rhs > tile->g + newCostToTile){
 				neighbour->parent = tile;
-				neighbour->rhs = tile->g + newCost;
+				neighbour->rhs = tile->g + newCostToTile;
 				updateVertex(neighbour);
 			}
 
@@ -171,10 +202,12 @@ void GridWorld::updateVertex(GridWorld::Tile*& tile){
 	bool isIncosistent = tile->rhs != tile->g; //potential problem with floating point comparison?
 
 	if(isIncosistent && tile->isOpen){
+		//tile->h = calculateH(tile);
+		tile->key = calculateKey(tile);
 		make_heap(open.begin(), open.end(), GridWorld::compareTiles);
 	
 	}else if(isIncosistent && !tile->isOpen){
-		tile->h = calculateH(tile);
+		//tile->h = calculateH(tile);
 		tile->key = calculateKey(tile);
 		tile->isOpen = true;
 		
@@ -281,7 +314,8 @@ double GridWorld::calculateC(GridWorld::Tile*& tileA, GridWorld::Tile*& tileB){
 
 GridWorld::KeyPair GridWorld::calculateKey(GridWorld::Tile*& tile){
 	double key2 = std::min(tile->g, tile->rhs);
-	double key1 = key2 + tile->h + km;		//Potential overflow in addition?
+	double key1 = key2 + calculateH(tile) + km;
+	//H-value should be recalculated as it can change during incremental search
 
 	return KeyPair(key1, key2);
 }
@@ -323,19 +357,37 @@ void GridWorld::Tile::info() const{
 	}
 }
 
-void GridWorld::printWorld(bool parentTrace) const{
+void GridWorld::printWorld() const{
+std::cout << "H:" << std::endl;
 	for (unsigned int y = 0; y < world.size(); y++){
 		for (unsigned int x = 0; x < world.at(0).size(); x++){
-			Tile* t = getTileAt(x, y);
-			if(parentTrace){
-				if(t->parent != 0){
-					printf("Tile (%u, %u) has parent (%u, %u)\n", t->x, t->y, t->parent->x, t->parent->y);
-				}
-			}else{
-				t->info();
-				std::cout << std::endl;
-			}
+			printf("%2.0lf ", getTileAt(x,y)->h);
 		}
 		std::cout << std::endl;
 	}
+
+	std::cout << "C:" << std::endl;
+	for (unsigned int y = 0; y < world.size(); y++){
+		for (unsigned int x = 0; x < world.at(0).size(); x++){
+			printf("%2.0lf ", getTileAt(x,y)->cost == INFINITY ? -1 : getTileAt(x,y)->cost);
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "G:" << std::endl;
+	for (unsigned int y = 0; y < world.size(); y++){
+		for (unsigned int x = 0; x < world.at(0).size(); x++){
+			printf("%2.0lf ", getTileAt(x,y)->g == INFINITY ? -1 : getTileAt(x,y)->g);
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "RHS:" << std::endl;
+	for (unsigned int y = 0; y < world.size(); y++){
+		for (unsigned int x = 0; x < world.at(0).size(); x++){
+			printf("%2.0lf ", getTileAt(x,y)->rhs == INFINITY ? -1 : getTileAt(x,y)->rhs);
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
 }

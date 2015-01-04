@@ -55,7 +55,7 @@ private:
 
 public:
 	GridWorld(unsigned int xSize, unsigned int ySize);
-	void printWorld(bool displayMap) const;
+	void printWorld() const;
 	void replan();
 	void updateCost(unsigned int x, unsigned int y, double cost);
 	//void updateCost(GridWorld::Tile*& tile, unsigned int cost);
