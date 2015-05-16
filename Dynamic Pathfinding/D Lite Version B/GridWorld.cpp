@@ -23,48 +23,6 @@ GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
 	open.push_back(start);
 }
 
-void GridWorld::replan(){
-	int counter = 0;
-	
-	//Having a wall during normal search doesn't seem to cause any problems
-	//getTileAt(3,3)->cost = INFINITY;
-	computeShortestPath();
-
-	while(start != goal){
-		std::cout << "Iteration: "<< counter << std::endl;
-		
-		if(goal->rhs == INFINITY){
-			std::cout << "\tNO PATH EXIST" << std::endl;
-			break;
-		}
-
-		goal = goal->parent;
-		if(goal != 0){
-			printf("\tMoved to (%u, %u)\n", goal->x, goal->y);
-		}else{
-			printf("\tError null successor\n");
-			return;
-		}
-
-		if(counter == 0){
-			//printWorld();
-			//updateCost(3,3,10);
-			//printWorld();
-		}
-		if(counter == 1){
-			//updateCost(3,3,10);
-
-			//Uncomment these 3 lines to completly block the goal
-			//updateCost(3,3,INFINITY);
-			//updateCost(3,4,INFINITY);
-			//updateCost(4,3,INFINITY);
-		}
-		counter++;
-	}
-	
-	//Uncomment the line below to print every info about gridworld
-	//printWorld();
-}
 
 
 void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
@@ -297,7 +255,8 @@ double GridWorld::calculateH(GridWorld::Tile*& tile){
 		std::swap(dx,dy);
 	}
 
-	return ((SQRT2-1) * dx + dy) * 10;
+	tile->h = ((SQRT2-1) * dx + dy) * 10;
+	return tile->h;
 }
 
 double GridWorld::calculateC(GridWorld::Tile*& tileA, GridWorld::Tile*& tileB){
@@ -307,6 +266,14 @@ double GridWorld::calculateC(GridWorld::Tile*& tileA, GridWorld::Tile*& tileB){
 
 	if(labs(tileA->x - tileB->x) + labs(tileA->y - tileB->y) == 2){
 		//These two tiles are diagonally adjacent to each other
+		Tile* vertical = getTileAt(tileA->x, tileA->y - (tileA->y - tileB->y));
+		Tile* horizontal = getTileAt(tileA->x - (tileA->x - tileB->x), tileA->y);
+		
+		if(vertical != 0 && vertical->cost == INFINITY || horizontal != 0 && horizontal->cost == INFINITY){
+
+			return INFINITY;
+		}
+
 		return SQRT2 * (tileA->cost + tileB->cost) / 2;
 	}
 	return (tileA->cost + tileB->cost) / 2;
