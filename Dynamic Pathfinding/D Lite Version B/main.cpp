@@ -1,26 +1,36 @@
 #include "GridWorld.h"
 #include <fstream>
 
-const int LENGTH = 5;
-const int WIDTH = 5;
+const int LENGTH = 10;
+const int WIDTH = 10;
 const int SCAN_RADIUS = 1;
-int realWorld[LENGTH][WIDTH] = {{0,0,0,0,0}, 
-								{0,0,0,0,0},
-								{0,0,1,1,0},
-								{0,0,1,0,0},
-								{0,0,0,0,0}};
+
+int realWorld[LENGTH*WIDTH] = { 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 GridWorld* world;
+
 
 void scanMap(){
 	int currentX = world->goal->x;
 	int currentY = world->goal->y;
 
-	for (int y = -SCAN_RADIUS; y < SCAN_RADIUS; y++){
-		for (int x = -SCAN_RADIUS; x < SCAN_RADIUS; x++){
-			if(world->withinWorld(currentX+x, currentY+y)){
-				if(realWorld[currentY+y][currentX+x] == 1 && world->getTileAt(currentX+x, currentY+y)->cost != INFINITY){
-					printf("\tInconistant Cost at %d %d\n", currentX+x, currentY+y);
+	for (int y = -SCAN_RADIUS; y <= SCAN_RADIUS; y++){
+		for (int x = -SCAN_RADIUS; x <= SCAN_RADIUS; x++){
+			if(world->withinWorld(currentX+x, currentY+y) && x != 0 && y != 0){
+				if(realWorld[(currentY+y)*LENGTH + currentX+x] == 1 && world->getTileAt(currentX+x, currentY+y)->cost != INFINITY){
+					printf("\tX: %d, Y:%d I:%d\n", currentX, currentY, (currentY+y)*LENGTH + currentX + x);
+					//printf("\tInconistant Cost at %d %d\n", currentX+x+1, currentY+y);
+					world->updateCost(currentX+x, currentY+y, INFINITY);
 				}
 			}
 		}
@@ -28,13 +38,13 @@ void scanMap(){
 
 	
 }
+
 void execute(){
 	int counter = 0;
 	world->computeShortestPath();
-	//printWorld();
+	//world->printWorld();
 	while(world->start != world->goal){
 		std::cout << "Iteration: "<< counter << std::endl;
-		
 		if(world->goal->rhs == INFINITY){
 			std::cout << "\tNO PATH EXIST" << std::endl;
 			break;
@@ -49,12 +59,18 @@ void execute(){
 			return;
 		}
 
+		counter++;
 		scanMap();
 	}
 }
 void main(){
-	world = new GridWorld(5,5);
+	std::cout << "Generating Map" << std::endl;
+	world = new GridWorld(10);
+
+	std::cout << "Finished generation" << std::endl;
 	execute();
+
+	std::cout << "Path calculated!" << std::endl;
 	system("PAUSE");
 }
 

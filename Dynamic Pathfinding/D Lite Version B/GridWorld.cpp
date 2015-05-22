@@ -1,16 +1,16 @@
 #include "GridWorld.h"
 
-GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
-	for (unsigned int y = 0; y < ySize; y++){
-		std::vector<Tile* const> row;
-		for (unsigned int x = 0; x < xSize; x++){
-			row.push_back(new Tile(x, y, 10));
+GridWorld::GridWorld(unsigned int size){
+	this->size = size;
+	world.reserve(size * size);
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
+			world.push_back(new Tile(x, y, 10));
 		}
-		world.push_back(row);
 	}
 
 	goal = getTileAt(0,0);
-	start = getTileAt(xSize - 1, ySize - 1);
+	start = getTileAt(size - 1, size - 1);
 
 	//INIT
 	km = 0;
@@ -27,7 +27,7 @@ GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
 
 void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	Tile* tile = getTileAt(x,y);
-	
+	printf("\tUpdating: X:%d Y:%d\n", tile->x, tile->y);
 	km += calculateH(oldGoal);
 	oldGoal = goal;
 
@@ -71,6 +71,7 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 			if(neighbour != start && neighbour->rhs > tile->g + newCostToTile){
 				neighbour->parent = tile;
 				neighbour->rhs = tile->g + newCostToTile;
+				//printf("\tUpdating: X:%d Y:%d\n", neighbour->x, neighbour->y);
 				updateVertex(neighbour);
 			}
 
@@ -78,6 +79,7 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 			TilePair minSucc(getMinSuccessor(neighbour));
 			neighbour->rhs = minSucc.second;
 			neighbour->parent = (neighbour->rhs == INFINITY ? 0 : minSucc.first);
+			//printf("\tUpdating: X:%d Y:%d\n", neighbour->x, neighbour->y);
 
 			updateVertex(neighbour);
 		}
@@ -182,11 +184,11 @@ void GridWorld::updateVertex(GridWorld::Tile*& tile){
 
 
 bool GridWorld::withinWorld(unsigned int x, unsigned int y) const{
-	return y >= 0 && y < world.size() && x >= 0 && x < world.at(0).size();
+	return y >= 0 && y < size && x >= 0 && x < size;
 }
 
 GridWorld::Tile* GridWorld::getTileAt(unsigned int x, unsigned int y) const{
-	return withinWorld(x,y) ? (world.at(y).at(x)) : NULL;
+	return withinWorld(x, y) ? (world.at(y*size+x)) : NULL;
 }
 
 std::vector<GridWorld::Tile*> GridWorld::getNeighbours(Tile*& tile){
@@ -326,32 +328,32 @@ void GridWorld::Tile::info() const{
 
 void GridWorld::printWorld() const{
 std::cout << "H:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->h);
 		}
 		std::cout << std::endl;
 	}
 
 	std::cout << "C:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->cost == INFINITY ? -1 : getTileAt(x,y)->cost);
 		}
 		std::cout << std::endl;
 	}
 
 	std::cout << "G:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->g == INFINITY ? -1 : getTileAt(x,y)->g);
 		}
 		std::cout << std::endl;
 	}
 
 	std::cout << "RHS:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->rhs == INFINITY ? -1 : getTileAt(x,y)->rhs);
 		}
 		std::cout << std::endl;

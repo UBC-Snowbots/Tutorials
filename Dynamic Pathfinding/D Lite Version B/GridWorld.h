@@ -42,7 +42,7 @@ public:
 	std::vector<Tile*> getNeighbours(Tile*& tile);
 
 	//------------------------------------------------
-
+	unsigned int size;
 	double km;
 	Tile* start;
 	Tile* goal;
@@ -50,11 +50,11 @@ public:
 	Tile* oldGoal;
 	
 	std::vector<Tile*> open;
-	std::vector< std::vector<Tile* const> > world;
+	std::vector<Tile* const> world;
 
 
 public:
-	GridWorld(unsigned int xSize, unsigned int ySize);
+	GridWorld(unsigned int size);
 	void printWorld() const;
 	//void replan();
 	void updateCost(unsigned int x, unsigned int y, double cost);
