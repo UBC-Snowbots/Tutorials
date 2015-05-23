@@ -38,24 +38,25 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	double oldCostToTile, newCostToTile;
 
 	//Update CURRENT by finding its new minimum RHS-value from NEIGHBOURS
-	for (Tile* neighbour : getNeighbours(tile)){
-
-		if (newCost == INFINITY && neighbour->cost < newCost){
-			neighbour->cost = INFINITY / 2;
+	std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (std::vector<Tile*>::iterator neighbour = neighbours.begin(); neighbour != neighbours.end(); ++neighbour){
+		if (newCost == INFINITY && (*neighbour)->cost < newCost){
+			(*neighbour)->cost = INFINITY / 2;
 		}
 
 		tile->cost = oldCost;
-		oldCostToTile = calculateC(tile, neighbour);
+		oldCostToTile = calculateC(tile, *neighbour);
 
 		tile->cost = newCost;
-		newCostToTile = calculateC(tile, neighbour);
+		newCostToTile = calculateC(tile, *neighbour);
 		
 		if (oldCostToTile > newCostToTile){
-			if(tile != start && tile->rhs > neighbour->g + newCostToTile){
-				tile->parent = neighbour;
-				tile->rhs = neighbour->g + newCostToTile;
+			if(tile != start && tile->rhs > (*neighbour)->g + newCostToTile){
+				tile->parent = (*neighbour);
+				tile->rhs = (*neighbour)->g + newCostToTile;
 			}
-		} else if (tile != start && tile->parent == neighbour){
+		}
+		else if (tile != start && tile->parent == (*neighbour)){
 			TilePair minSucc(getMinSuccessor(tile));
 			tile->rhs = minSucc.second;
 			tile->parent = (tile->rhs == INFINITY ? 0 : minSucc.first);
@@ -65,25 +66,26 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	updateVertex(tile);
 
 	//Update all NEIGHBOURING cells by finding their new min RHS-values from CURRENT
-	for (Tile* neighbour : getNeighbours(tile)){
+	//std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (std::vector<Tile*>::iterator neighbour = neighbours.begin(); neighbour != neighbours.end(); ++neighbour){
 		tile->cost = oldCost;
-		oldCostToTile = calculateC(tile, neighbour);
+		oldCostToTile = calculateC(tile, *neighbour);
 
 		tile->cost = newCost;
-		newCostToTile = calculateC(tile, neighbour);
+		newCostToTile = calculateC(tile, *neighbour);
 
 		if (oldCostToTile > newCostToTile){
-			if(neighbour != start && neighbour->rhs > tile->g + newCostToTile){
-				neighbour->parent = tile;
-				neighbour->rhs = tile->g + newCostToTile;
-				updateVertex(neighbour);
+			if(*neighbour != start && (*neighbour)->rhs > tile->g + newCostToTile){
+				(*neighbour)->parent = tile;
+				(*neighbour)->rhs = tile->g + newCostToTile;
+				updateVertex(*neighbour);
 			}
 
-		} else if (neighbour != start && neighbour->parent == tile){
-			TilePair minSucc(getMinSuccessor(neighbour));
-			neighbour->rhs = minSucc.second;	
-			neighbour->parent = (neighbour->rhs == INFINITY ? 0 : minSucc.first);
-			updateVertex(neighbour);
+		} else if (*neighbour != start && (*neighbour)->parent == tile){
+			TilePair minSucc(getMinSuccessor(*neighbour));
+			(*neighbour)->rhs = minSucc.second;
+			(*neighbour)->parent = ((*neighbour)->rhs == INFINITY ? 0 : minSucc.first);
+			updateVertex(*neighbour);
 		}
 	}
 	
@@ -121,11 +123,12 @@ bool GridWorld::computeShortestPath(){
 			make_heap(open.begin(), open.end(), GridWorld::compareTiles);
 			current->isOpen = false;
 
-			for (Tile* neighbour : getNeighbours(current)){
-				if(neighbour != start && neighbour->rhs > current->g + calculateC(current, neighbour)){
-					neighbour->parent = current;
-					neighbour->rhs = current->g + calculateC(current, neighbour);	
-					updateVertex(neighbour);
+			std::vector<Tile*> neighbours(getNeighbours(current));
+			for (std::vector<Tile*>::iterator neighbour = neighbours.begin(); neighbour != neighbours.end(); ++neighbour){
+				if(*neighbour != start && (*neighbour)->rhs > current->g + calculateC(current, *neighbour)){
+					(*neighbour)->parent = current;
+					(*neighbour)->rhs = current->g + calculateC(current, *neighbour);
+					updateVertex(*neighbour);
 				}
 			}
 
@@ -142,13 +145,14 @@ bool GridWorld::computeShortestPath(){
 			updateVertex(current);
 
 			//Update NEIGHBOURS
-			for (Tile* neighbour : getNeighbours(current)){
-				if(neighbour != start && neighbour->parent == current){
-					TilePair minSucc(getMinSuccessor(neighbour));
-					neighbour->rhs = minSucc.second;
-					neighbour->parent = neighbour->rhs == INFINITY ? 0 : minSucc.first;
+			std::vector<Tile*> neighbours(getNeighbours(current));
+			for (std::vector<Tile*>::iterator neighbour = neighbours.begin(); neighbour != neighbours.end(); ++neighbour){
+				if (*neighbour != start && (*neighbour)->parent == current){
+					TilePair minSucc(getMinSuccessor(*neighbour));
+					(*neighbour)->rhs = minSucc.second;
+					(*neighbour)->parent = (*neighbour)->rhs == INFINITY ? 0 : minSucc.first;
 				}
-				updateVertex(neighbour);
+				updateVertex(*neighbour);
 			}
 
 		}
@@ -203,7 +207,7 @@ std::vector<GridWorld::Tile*> GridWorld::getNeighbours(Tile*& tile){
 	std::vector<GridWorld::Tile*> neighbours;
 	for (int dy = -1; dy <= 1; dy++){
 		for (int dx = -1; dx <= 1; dx++){
-			if(abs(dy) + abs(dx) != 0){
+			if(abs(dy) + abs(dx) == 1){
 				//For 4 neighbours: abs(dy) + abs(dx) == 1
 				Tile* neighbour = getTileAt(tile->x + dx, tile->y + dy);
 				if (neighbour != 0){
@@ -239,16 +243,17 @@ GridWorld::TilePair GridWorld::getMinSuccessor(GridWorld::Tile*& tile){
 	Tile* minTile = 0;
 	double minCost = INFINITY;
 
-	for (Tile* neighbour : getNeighbours(tile)){
-		double cost = calculateC(tile, neighbour);
-		double g = neighbour->g;
+	std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (std::vector<Tile*>::iterator neighbour = neighbours.begin(); neighbour != neighbours.end(); ++neighbour){
+		double cost = calculateC(tile, *neighbour);
+		double g = (*neighbour)->g;
 			
 		if(cost == INFINITY || g == INFINITY){
 			continue;
 		}
 			
 		if(cost + g < minCost){ //potential overflow?
-			minTile = neighbour;
+			minTile = (*neighbour);
 			minCost = cost + g;
 		}
 	}
@@ -272,18 +277,18 @@ double GridWorld::calculateC(GridWorld::Tile*& tileA, GridWorld::Tile*& tileB){
 	if(tileA->cost == INFINITY || tileB->cost == INFINITY){
 		return INFINITY;
 	}
-
+	/*
 	if(labs(tileA->x - tileB->x) + labs(tileA->y - tileB->y) == 2){
 		//These two tiles are diagonally adjacent to each other
-		/*Tile* vertical = getTileAt(tileB->x, tileB->y - (tileA->y - tileB->y));
+		Tile* vertical = getTileAt(tileB->x, tileB->y - (tileA->y - tileB->y));
 		Tile* horizontal = getTileAt(tileB->x - (tileA->x - tileB->x), tileB->y);
 		
 		if(vertical != 0 && vertical->cost == INFINITY || horizontal != 0 && horizontal->cost == INFINITY){
 			return INFINITY;
-		}*/
+		}
 
 		return SQRT2 * (tileA->cost + tileB->cost) / 2;
-	}
+	}*/
 	return (tileA->cost + tileB->cost) / 2;
 }
 

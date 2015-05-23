@@ -28,7 +28,7 @@ void scanMap(){
 		for (int x = -SCAN_RADIUS; x <= SCAN_RADIUS; x++){
 			if(world->withinWorld(currentX+x, currentY+y)){
 				if(realWorld[(currentY+y)*LENGTH + currentX+x] == 1 && world->getTileAt(currentX+x, currentY+y)->cost != INFINITY){
-					printf("\tX: %d, Y:%d I:%d\n", currentX, currentY, (currentY+y)*LENGTH + currentX + x);
+					//printf("\tX: %d, Y:%d I:%d\n", currentX, currentY, (currentY+y)*LENGTH + currentX + x);
 					//printf("\tInconistant Cost at %d %d\n", currentX+x+1, currentY+y);
 					world->updateCost(currentX+x, currentY+y, INFINITY);
 				}
@@ -69,7 +69,7 @@ void main(){
 
 	std::cout << "Finished generation" << std::endl;
 	execute();
-	world->printWorld();
+	//world->printWorld();
 	std::cout << "Path calculated!" << std::endl;
 	system("PAUSE");
 }
