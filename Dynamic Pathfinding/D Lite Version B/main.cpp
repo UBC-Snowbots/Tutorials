@@ -8,10 +8,10 @@ const int SCAN_RADIUS = 1;
 int realWorld[LENGTH*WIDTH] = { 
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -26,7 +26,7 @@ void scanMap(){
 
 	for (int y = -SCAN_RADIUS; y <= SCAN_RADIUS; y++){
 		for (int x = -SCAN_RADIUS; x <= SCAN_RADIUS; x++){
-			if(world->withinWorld(currentX+x, currentY+y) && x != 0 && y != 0){
+			if(world->withinWorld(currentX+x, currentY+y)){
 				if(realWorld[(currentY+y)*LENGTH + currentX+x] == 1 && world->getTileAt(currentX+x, currentY+y)->cost != INFINITY){
 					printf("\tX: %d, Y:%d I:%d\n", currentX, currentY, (currentY+y)*LENGTH + currentX + x);
 					//printf("\tInconistant Cost at %d %d\n", currentX+x+1, currentY+y);
@@ -69,7 +69,7 @@ void main(){
 
 	std::cout << "Finished generation" << std::endl;
 	execute();
-
+	world->printWorld();
 	std::cout << "Path calculated!" << std::endl;
 	system("PAUSE");
 }

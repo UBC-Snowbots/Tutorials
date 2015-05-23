@@ -41,6 +41,8 @@ public:
 	TilePair getMinSuccessor(Tile*& tile);
 	std::vector<Tile*> getNeighbours(Tile*& tile);
 
+	bool isDiagonal(Tile*& a, Tile*& b);
+
 	//------------------------------------------------
 	unsigned int size;
 	double km;
