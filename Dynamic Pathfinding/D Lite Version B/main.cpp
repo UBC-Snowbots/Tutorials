@@ -5,6 +5,7 @@ const int LENGTH = 10;
 const int WIDTH = 10;
 const int SCAN_RADIUS = 1;
 
+//TODO: TRY TO RESOLVE CRITICAL ERROR FOR MAP WITH RESOLUTION THAT'S NOT 1x1
 int realWorld[LENGTH*WIDTH] = { 
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
