@@ -1,18 +1,23 @@
 #include "GridWorld.h"
 
-GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
-	for (unsigned int y = 0; y < ySize; y++){
-		std::vector<Tile* const> row;
-		for (unsigned int x = 0; x < xSize; x++){
-			row.push_back(new Tile(x, y, 10));
+/*
+BEFORE ATTEMPTING TO READ THIS FILE, PLEASE HAVE A BASIC UNDERSTANDING OF D*LITE
+FROM READING ITS ORIGINAL RESEARCH PAPER'S PSEUDO-CODE. 
+*/
+
+GridWorld::GridWorld(unsigned int size, int radius){
+	this->size = size;
+	this->radius = radius;
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
+			world.push_back(new Tile(x, y, 10));
 		}
-		world.push_back(row);
 	}
 
 	start = getTileAt(0,0);
-	goal = getTileAt(xSize - 1, ySize - 1);
+	goal = getTileAt(size - 1, size - 1);
 
-	//INIT
+	//Initializing the pathfinder's default values
 	km = 0;
 	previous = start;
 	goal->rhs = 0;
@@ -23,10 +28,39 @@ GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
 	open.push_back(goal);
 }
 
+/*
+This method handles the inflation of surrounding tiles. When an obsticle
+is detected, the surrounding tile's cost can be inflated to make the robot
+avoid getting anywhere near the obsticle. By the nature of pathfinding on
+grid maps, the resultant path tends to "hug the wall", however this will make
+the path have some distance between itself and any obsticles
+*/
+void GridWorld::inflate(unsigned int x, unsigned int y, double newCost){
+	updateCost(x, y, newCost);
+	for (int dy = -radius; dy <= radius; dy++){
+		for (int dx = -radius; dx <= radius; dx++){
+			if (abs(dy) + abs(dx) != 0){
+				Tile* t = getTileAt(x + dx, y + dy);
+				if (t != 0 && newCost > t->cost){
+					updateCost(x+dx, y+dy, INFLATION);
+				}
+				
+			}
+		}
+	}
+}
 
+/*
+This method does the same thing as the pseudo-code's updateVertex(),
+except for grids instead of graphs.
+
+Pathfinding algorimths tend to be demonstraited with a graph rather than a grid, 
+in order to update the cost between two tiles we must update both the tile and its neighbour.
+*/
 void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	Tile* tile = getTileAt(x,y);
 
+	//printf("<%d, %d>\n", x, y);
 	km += calculateH(previous);
 	previous = start;
 
@@ -97,7 +131,7 @@ bool GridWorld::computeShortestPath(){
 
 	while(!open.empty() && (compareKeys(open.front()->key, start->key = calculateKey(start)) || start->rhs != start->g)){
 		Tile* current = open.front();
-		//Notice that CURRENT wasn't pop yet..
+		//Notice that CURRENT wasn't pop/removed yet..
 
 		KeyPair k_old = current->key;
 		KeyPair k_new = calculateKey(current);
@@ -110,12 +144,13 @@ bool GridWorld::computeShortestPath(){
 		std::cout << std::endl;*/
 
 		if(compareKeys(k_old, k_new)){
-			//Tiles under this branch will have to be updated as incremental search has happened
+			//This branch updates tile that were already in the OPEN list originally
+			//This branch tends to execute AFTER the else branch
 			current->key = k_new;
 			make_heap(open.begin(), open.end(), GridWorld::compareTiles);
 
 		} else if (otherG > currentRHS){
-			//Majority of the tiles will fall under this conditional branch as
+			//Majority of the execution will fall under this conditional branch as
 			//it is undergoing normal A* pathfinding
 
 			current->g = current->rhs;
@@ -135,7 +170,7 @@ bool GridWorld::computeShortestPath(){
 			}
 
 		} else {
-			//Tiles under this branch will need to be updated during incremental search
+			//Execution of this branch updates the tile during incremental search
 
 			previousG = otherG;
 			current->g = INFINITY;
@@ -166,15 +201,13 @@ bool GridWorld::computeShortestPath(){
 }
 
 void GridWorld::updateVertex(GridWorld::Tile*& tile){
-	bool isIncosistent = tile->rhs != tile->g; //potential problem with floating point comparison?
+	bool isIncosistent = tile->rhs != tile->g;
 
 	if(isIncosistent && tile->isOpen){
-		//tile->h = calculateH(tile);
 		tile->key = calculateKey(tile);
 		make_heap(open.begin(), open.end(), GridWorld::compareTiles);
 	
 	}else if(isIncosistent && !tile->isOpen){
-		//tile->h = calculateH(tile);
 		tile->key = calculateKey(tile);
 		tile->isOpen = true;
 		
@@ -191,11 +224,11 @@ void GridWorld::updateVertex(GridWorld::Tile*& tile){
 
 
 bool GridWorld::withinWorld(unsigned int x, unsigned int y) const{
-	return y >= 0 && y < world.size() && x >= 0 && x < world.at(0).size();
+	return y >= 0 && y < size && x >= 0 && x < size;
 }
 
 GridWorld::Tile* GridWorld::getTileAt(unsigned int x, unsigned int y) const{
-	return withinWorld(x,y) ? (world.at(y).at(x)) : NULL;
+	return withinWorld(x,y) ? (world.at(y*size+x)) : NULL;
 }
 
 std::vector<GridWorld::Tile*> GridWorld::getNeighbours(Tile*& tile){
@@ -215,9 +248,9 @@ std::vector<GridWorld::Tile*> GridWorld::getNeighbours(Tile*& tile){
 
 bool GridWorld::compareTiles(Tile*& left, Tile*& right){
 	/* 
-		The heap functions from <algorithm> operates as a MAX heap,
-		by making sure that left < right. In order to operate as a MIN heap
-		we'll reverse the order by comparing right < left
+	The heap functions from <algorithm> operates as a MAX heap,
+	by making sure that left < right. In order to operate as a MIN heap
+	we'll reverse the order by comparing right < left
 	 */
 	return compareKeys(right->key, left->key);
 }
@@ -279,7 +312,7 @@ double GridWorld::calculateC(GridWorld::Tile*& tileA, GridWorld::Tile*& tileB){
 GridWorld::KeyPair GridWorld::calculateKey(GridWorld::Tile*& tile){
 	double key2 = std::min(tile->g, tile->rhs);
 	double key1 = key2 + calculateH(tile) + km;
-	//H-value should be recalculated as it can change during incremental search
+	//H-value should be re-calculated every call as it can change during incremental search
 
 	return KeyPair(key1, key2);
 }
@@ -316,32 +349,40 @@ void GridWorld::Tile::info() const{
 
 void GridWorld::printWorld() const{
 	std::cout << "H:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->h);
 		}
 		std::cout << std::endl;
 	}
 
 	std::cout << "C:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
-			printf("%2.0lf ", getTileAt(x,y)->cost == INFINITY ? -1 : getTileAt(x,y)->cost);
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
+			double cost = getTileAt(x, y)->cost;
+			if (cost == INFINITY){
+				printf("-1 ");
+			}else if (cost == INFLATION){
+				printf("^^ ");
+			}else{
+				printf("%2.0lf ", cost);
+			}
+				
 		}
 		std::cout << std::endl;
 	}
 
 	std::cout << "G:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->g == INFINITY ? -1 : getTileAt(x,y)->g);
 		}
 		std::cout << std::endl;
 	}
 
 	std::cout << "RHS:" << std::endl;
-	for (unsigned int y = 0; y < world.size(); y++){
-		for (unsigned int x = 0; x < world.at(0).size(); x++){
+	for (unsigned int y = 0; y < size; y++){
+		for (unsigned int x = 0; x < size; x++){
 			printf("%2.0lf ", getTileAt(x,y)->rhs == INFINITY ? -1 : getTileAt(x,y)->rhs);
 		}
 		std::cout << std::endl;
