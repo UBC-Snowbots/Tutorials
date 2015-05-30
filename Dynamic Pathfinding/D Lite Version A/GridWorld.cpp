@@ -23,44 +23,6 @@ GridWorld::GridWorld(unsigned int xSize, unsigned int ySize){
 	open.push_back(goal);
 }
 
-void GridWorld::replan(){
-	int counter = 0;
-
-	//Having a wall during normal search doesn't seem to cause any problems
-	//getTileAt(3,3)->cost = INFINITY;
-
-	computeShortestPath();
-
-	while (start != goal){
-		std::cout << "Iteration :" << counter << std::endl;
-
-		if(start->rhs == INFINITY){
-			std::cout << "\tNO PATH EXIST" << std::endl;
-			break;
-		}
-		
-		start = getMinSuccessor(start).first;
-		std::cout << "\tMoved to: (" << start->x << ", " << start->y << ")" << std::endl;
-		
-		if(counter == 0){
-			//printWorld();
-			//updateCost(3,3,10);
-			//printWorld();
-		}
-		if(counter == 1){
-			//updateCost(3,3,10);
-
-			//Uncomment these 3 lines to completly block the goal
-			//updateCost(3,3,INFINITY);
-			//updateCost(3,4,INFINITY);
-			//updateCost(4,3,INFINITY);
-		}	
-		counter++;
-	}
-	//Uncomment the line below to print every info about gridworld
-	//printWorld();
-}
-
 
 void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	Tile* tile = getTileAt(x,y);
