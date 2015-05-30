@@ -9,7 +9,7 @@ class GridWorld{
 
 typedef std::pair<double, double> KeyPair;
 
-private:
+public:
 	struct Tile{
 		const unsigned int x, y;
 		double rhs, g, h, cost;
@@ -56,7 +56,5 @@ private:
 public:
 	GridWorld(unsigned int xSize, unsigned int ySize);
 	void printWorld() const;
-	void replan();
 	void updateCost(unsigned int x, unsigned int y, double cost);
-	//void updateCost(GridWorld::Tile*& tile, unsigned int cost);
 };
