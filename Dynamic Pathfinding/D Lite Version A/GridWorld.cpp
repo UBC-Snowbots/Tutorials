@@ -74,15 +74,16 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	double currentRHS, otherG;
 
 	//Update CURRENT by finding its new minimum RHS-value from NEIGHBOURS
-	for(Tile* neighbour : getNeighbours(tile)){
+	std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (int i = 0; i < neighbours.size(); i++){
 		tile->cost = oldCost;
-		oldCostToTile = calculateC(tile, neighbour);
+		oldCostToTile = calculateC(tile, neighbours[i]);
 		
 		tile->cost = newCost;
-		newCostToTile = calculateC(tile, neighbour);
+		newCostToTile = calculateC(tile, neighbours[i]);
 
 		currentRHS = tile->rhs;
-		otherG = neighbour->g;
+		otherG = neighbours[i]->g;
 
 		if(oldCostToTile > newCostToTile){
 			if(tile != goal){
@@ -98,26 +99,26 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	updateVertex(tile);
 	
 	//Update all NEIGHBOURING cells by finding their new min RHS-values from CURRENT
-	for (Tile* neighbour : getNeighbours(tile)){
+	for (int i = 0; i < neighbours.size(); i++){
 		tile->cost = oldCost;
-		oldCostToTile = calculateC(tile, neighbour);
+		oldCostToTile = calculateC(tile, neighbours[i]);
 		
 		tile->cost = newCost;
-		newCostToTile = calculateC(tile, neighbour);
+		newCostToTile = calculateC(tile, neighbours[i]);
 
-		currentRHS = neighbour->rhs;
+		currentRHS = neighbours[i]->rhs;
 		otherG = tile->g;
 
 		if(oldCostToTile > newCostToTile){
-			if(neighbour != goal){
-				neighbour->rhs = std::min(currentRHS, (newCostToTile + otherG));
+			if (neighbours[i] != goal){
+				neighbours[i]->rhs = std::min(currentRHS, (newCostToTile + otherG));
 			}
 		} else if (currentRHS == (oldCostToTile + otherG)){
-			if(neighbour != goal){
-				neighbour->rhs = getMinSuccessor(neighbour).second;
+			if (neighbours[i] != goal){
+				neighbours[i]->rhs = getMinSuccessor(neighbours[i]).second;
 			}
 		}
-		updateVertex(neighbour);
+		updateVertex(neighbours[i]);
 	}
 	
 	computeShortestPath();
@@ -162,12 +163,13 @@ bool GridWorld::computeShortestPath(){
 			make_heap(open.begin(), open.end(), GridWorld::compareTiles);
 			current->isOpen = false;
 
-			for (Tile* neighbour : getNeighbours(current)){
-				if(neighbour != 0){
-					if(neighbour != goal){
-						neighbour->rhs = std::min(neighbour->rhs, calculateC(current, neighbour) + otherG);
+			std::vector<Tile*> neighbours(getNeighbours(current));
+			for (int i = 0; i < neighbours.size(); i++){
+				if(neighbours[i] != 0){
+					if (neighbours[i] != goal){
+						neighbours[i]->rhs = std::min(neighbours[i]->rhs, calculateC(current, neighbours[i]) + otherG);
 					}
-					updateVertex(neighbour);
+					updateVertex(neighbours[i]);
 				}
 			}
 
@@ -184,12 +186,13 @@ bool GridWorld::computeShortestPath(){
 			updateVertex(current);
 
 			//Update NEIGHBOUR'S RHS to their minimum successor
-			for (Tile* neighbour : getNeighbours(current)){
-				if(neighbour != 0){
-					if(neighbour->rhs == (calculateC(current, neighbour) + previousG) && neighbour != goal){
-						neighbour->rhs = getMinSuccessor(neighbour).second;
+			std::vector<Tile*> neighbours(getNeighbours(current));
+			for (int i = 0; i < neighbours.size(); i++){
+				if (neighbours[i] != 0){
+					if (neighbours[i]->rhs == (calculateC(current, neighbours[i]) + previousG) && neighbours[i] != goal){
+						neighbours[i]->rhs = getMinSuccessor(neighbours[i]).second;
 					}
-					updateVertex(neighbour);
+					updateVertex(neighbours[i]);
 				}
 			}
 
@@ -271,16 +274,17 @@ GridWorld::TilePair GridWorld::getMinSuccessor(GridWorld::Tile*& tile){
 	Tile* minTile = 0;
 	double minCost = INFINITY;
 
-	for (Tile* neighbour : getNeighbours(tile)){
-		double cost = calculateC(tile, neighbour);
-		double g = neighbour->g;
+	std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (int i = 0; i < neighbours.size(); i++){
+		double cost = calculateC(tile, neighbours[i]);
+		double g = neighbours[i]->g;
 			
 		if(cost == INFINITY || g == INFINITY){
 			continue;
 		}
 			
 		if(cost + g < minCost){   //potential overflow?
-			minTile = neighbour;
+			minTile = neighbours[i];
 			minCost = cost + g;
 		}
 	}

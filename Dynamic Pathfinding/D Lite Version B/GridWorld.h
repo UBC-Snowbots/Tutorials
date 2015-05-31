@@ -1,3 +1,7 @@
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
+#include <climits>
+#include <stdio.h>
 #include <algorithm>
 #include <vector>
 #include <iostream>
@@ -52,7 +56,7 @@ public:
 	Tile* previous;
 
 	std::vector<Tile*> open;
-	std::vector<Tile* const> world;
+	std::vector<Tile*> world;
 
 
 	GridWorld(unsigned int size, int radius);

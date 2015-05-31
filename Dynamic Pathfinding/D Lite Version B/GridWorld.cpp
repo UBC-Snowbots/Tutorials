@@ -73,20 +73,21 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	double oldCostToTile, newCostToTile;
 
 	//Update CURRENT by finding its new minimum RHS-value from NEIGHBOURS
-	for (Tile* neighbour : getNeighbours(tile)){
+	std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (int i = 0; i < neighbours.size(); i++){
 		tile->cost = oldCost;
-		oldCostToTile = calculateC(tile, neighbour);
+		oldCostToTile = calculateC(tile, neighbours[i]);
 
 		tile->cost = newCost;
-		newCostToTile = calculateC(tile, neighbour);
+		newCostToTile = calculateC(tile, neighbours[i]);
 
 		if (oldCostToTile > newCostToTile){
-			if (tile != start && tile->rhs > neighbour->g + newCostToTile){
-				tile->successor = neighbour;
-				tile->rhs = neighbour->g + newCostToTile;
+			if (tile != start && tile->rhs > neighbours[i]->g + newCostToTile){
+				tile->successor = neighbours[i];
+				tile->rhs = neighbours[i]->g + newCostToTile;
 			}
 		}
-		else if (tile != start && tile->successor == neighbour){
+		else if (tile != start && tile->successor == neighbours[i]){
 			TilePair minSucc(getMinSuccessor(tile));
 			tile->rhs = minSucc.second;
 			tile->successor = (tile->rhs == INFINITY ? 0 : minSucc.first);
@@ -96,27 +97,27 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	updateVertex(tile);
 
 	//Update all NEIGHBOURING cells by finding their new min RHS-values from CURRENT
-	for (Tile* neighbour : getNeighbours(tile)){
+	for (int i = 0; i < neighbours.size(); i++){
 		tile->cost = oldCost;
-		oldCostToTile = calculateC(tile, neighbour);
+		oldCostToTile = calculateC(tile, neighbours[i]);
 
 		tile->cost = newCost;
-		newCostToTile = calculateC(tile, neighbour);
+		newCostToTile = calculateC(tile, neighbours[i]);
 
 		if (oldCostToTile > newCostToTile){
-			if (neighbour != start && neighbour->rhs > tile->g + newCostToTile){
-				neighbour->successor = tile;
-				neighbour->rhs = tile->g + newCostToTile;
-				updateVertex(neighbour);
+			if (neighbours[i] != start && neighbours[i]->rhs > tile->g + newCostToTile){
+				neighbours[i]->successor = tile;
+				neighbours[i]->rhs = tile->g + newCostToTile;
+				updateVertex(neighbours[i]);
 			}
 
 		}
-		else if (neighbour != start && neighbour->successor == tile){
-			TilePair minSucc(getMinSuccessor(neighbour));
-			neighbour->rhs = minSucc.second;
-			neighbour->successor = (neighbour->rhs == INFINITY ? 0 : minSucc.first);
+		else if (neighbours[i] != start && neighbours[i]->successor == tile){
+			TilePair minSucc(getMinSuccessor(neighbours[i]));
+			neighbours[i]->rhs = minSucc.second;
+			neighbours[i]->successor = (neighbours[i]->rhs == INFINITY ? 0 : minSucc.first);
 
-			updateVertex(neighbour);
+			updateVertex(neighbours[i]);
 		}
 	}
 
@@ -155,11 +156,12 @@ bool GridWorld::computeShortestPath(){
 			make_heap(open.begin(), open.end(), GridWorld::compareTiles);
 			current->isOpen = false;
 
-			for (Tile* neighbour : getNeighbours(current)){
-				if (neighbour != start && neighbour->rhs > current->g + calculateC(current, neighbour)){
-					neighbour->successor = current;
-					neighbour->rhs = current->g + calculateC(current, neighbour);
-					updateVertex(neighbour);
+			std::vector<Tile*> neighbours(getNeighbours(current));
+			for (int i = 0; i < neighbours.size(); i++){
+				if (neighbours[i] != start && neighbours[i]->rhs > current->g + calculateC(current, neighbours[i])){
+					neighbours[i]->successor = current;
+					neighbours[i]->rhs = current->g + calculateC(current, neighbours[i]);
+					updateVertex(neighbours[i]);
 				}
 			}
 
@@ -177,13 +179,14 @@ bool GridWorld::computeShortestPath(){
 			updateVertex(current);
 
 			//Update NEIGHBOURS
-			for (Tile* neighbour : getNeighbours(current)){
-				if (neighbour != start && neighbour->successor == current){
-					TilePair minSucc(getMinSuccessor(neighbour));
-					neighbour->rhs = minSucc.second;
-					neighbour->successor = neighbour->rhs == INFINITY ? 0 : minSucc.first;
+			std::vector<Tile*> neighbours(getNeighbours(current));
+			for (int i = 0; i < neighbours.size(); i++){
+				if (neighbours[i] != start && neighbours[i]->successor == current){
+					TilePair minSucc(getMinSuccessor(neighbours[i]));
+					neighbours[i]->rhs = minSucc.second;
+					neighbours[i]->successor = neighbours[i]->rhs == INFINITY ? 0 : minSucc.first;
 				}
-				updateVertex(neighbour);
+				updateVertex(neighbours[i]);
 			}
 
 		}
@@ -273,16 +276,17 @@ GridWorld::TilePair GridWorld::getMinSuccessor(GridWorld::Tile*& tile){
 	Tile* minTile = 0;
 	double minCost = INFINITY;
 
-	for (Tile* neighbour : getNeighbours(tile)){
-		double cost = calculateC(tile, neighbour);
-		double g = neighbour->g;
+	std::vector<Tile*> neighbours(getNeighbours(tile));
+	for (int i = 0; i < neighbours.size(); i++){
+		double cost = calculateC(tile, neighbours[i]);
+		double g = neighbours[i]->g;
 
 		if (cost == INFINITY || g == INFINITY){
 			continue;
 		}
 
 		if (cost + g < minCost){ //potential overflow?
-			minTile = neighbour;
+			minTile = neighbours[i];
 			minCost = cost + g;
 		}
 	}
