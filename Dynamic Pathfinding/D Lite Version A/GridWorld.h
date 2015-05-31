@@ -16,7 +16,7 @@ typedef std::pair<double, double> KeyPair;
 
 public:
 	struct Tile{
-		const unsigned int x, y;
+		const int x, y;
 		double rhs, g, h, cost;
 		KeyPair key;
 		bool isOpen;

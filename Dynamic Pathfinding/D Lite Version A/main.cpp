@@ -80,7 +80,7 @@ void execute(){
 
 	world->computeShortestPath();
 
-	while (world->start != world->goal){
+	while (world->start != world->goal && counter < 40){
 		std::cout << "Iteration " << counter;
 
 		if (world->start->rhs == PF_INFINITY){
@@ -106,7 +106,7 @@ void execute(){
 
 
 //Setting up the pathfinder etc...
-void main(){
+int main(){
 		std::cout << "Generating Map" << std::endl;
 		world = new GridWorld(SIZE, INTERSECTION_RADIUS);
 		std::cout << "Finished generation" << std::endl;
@@ -124,4 +124,5 @@ void main(){
 			std::cout << std::endl;
 		}
 		system("PAUSE");
+		return 0;
 }

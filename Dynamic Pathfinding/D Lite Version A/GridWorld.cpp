@@ -41,7 +41,7 @@ void GridWorld::inflate(unsigned int x, unsigned int y, double newCost){
 		for (int dx = -radius; dx <= radius; dx++){
 			if (abs(dy) + abs(dx) != 0){
 				Tile* t = getTileAt(x + dx, y + dy);
-				if (t != 0 && newCost > t->cost){
+				if (t != 0 && t->cost < PF_INFLATION){
 					updateCost(x+dx, y+dy, PF_INFLATION);
 				}
 				
@@ -62,7 +62,6 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	count++;
 	Tile* tile = getTileAt(x,y);
 
-	printf("Updating <%d, %d> from %2.0lf to %2.0lf - Update: %d\n", x, y, tile->cost, newCost, count);
 	km += calculateH(previous);
 	previous = start;
 
@@ -99,6 +98,7 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	updateVertex(tile);
 	
 	//Update all NEIGHBOURING cells by finding their new min RHS-values from CURRENT
+	
 	for (int i = 0; i < neighbours.size(); i++){
 		tile->cost = oldCost;
 		oldCostToTile = calculateC(tile, neighbours[i]);
@@ -142,9 +142,10 @@ bool GridWorld::computeShortestPath(){
 		currentRHS = current->rhs;
 		otherG = current->g;
 
-		/*std::cout << "Expanding:";
-		current->info();
-		std::cout << std::endl;*/
+		//Uncomment this to see CURRENT's value before
+		//std::cout << "Expanding:";
+		//current->info();
+		//std::cout << std::endl;
 
 		if(compareKeys(k_old, k_new)){
 			//This branch updates tile that were already in the OPEN list originally
@@ -293,9 +294,10 @@ GridWorld::TilePair GridWorld::getMinSuccessor(GridWorld::Tile*& tile){
 }
 
 double GridWorld::calculateH(GridWorld::Tile*& tile){
+	//C++03 doesn't handle overflow in subtraction of uint :(
 	unsigned int dx = labs(tile->x - start->x);
 	unsigned int dy = labs(tile->y - start->y);
-
+	
 	if(dx > dy){
 		std::swap(dx,dy);
 	}
@@ -319,7 +321,7 @@ GridWorld::KeyPair GridWorld::calculateKey(GridWorld::Tile*& tile){
 	double key2 = std::min(tile->g, tile->rhs);
 	double key1 = key2 + calculateH(tile) + km;
 	//H-value should be re-calculated every call as it can change during incremental search
-
+	
 	return KeyPair(key1, key2);
 }
 

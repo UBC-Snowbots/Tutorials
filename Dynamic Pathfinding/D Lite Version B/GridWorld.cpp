@@ -41,7 +41,7 @@ void GridWorld::inflate(unsigned int x, unsigned int y, double newCost){
 		for (int dx = -radius; dx <= radius; dx++){
 			if (abs(dy) + abs(dx) != 0){
 				Tile* t = getTileAt(x + dx, y + dy);
-				if (t != 0 && newCost > t->cost){
+				if (t != 0 && t->cost < PF_INFLATION){
 					updateCost(x + dx, y + dy, PF_INFLATION);
 				}
 
@@ -62,7 +62,6 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	count++;
 	Tile* tile = getTileAt(x, y);
 	
-	printf("Updating <%d, %d> from %2.0lf to %2.0lf - Update: %d\n", x, y, tile->cost, newCost, count);
 	km += calculateH(previous);
 	previous = goal;
 

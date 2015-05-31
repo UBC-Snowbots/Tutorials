@@ -75,9 +75,6 @@ main loop of our program.
 */
 void execute(){
 	int counter = 0;
-
-	//Having a wall during normal search doesn't seem to cause any problems
-	//getTileAt(3,3)->cost = PF_INFINITY;
 	world->computeShortestPath();
 
 	while (world->start != world->goal){
@@ -100,16 +97,12 @@ void execute(){
 
 		scanMap();
 		counter++;
-
 	}
-
-	//Uncomment the line below to print every info about gridworld
-	//world->printWorld();
 }
 
 
 //Setting up the pathfinder etc...
-void main(){
+int main(){
 	std::cout << "Generating Map" << std::endl;
 	world = new GridWorld(SIZE, INTERSECTION_RADIUS);
 	std::cout << "Finished generation" << std::endl;
@@ -128,4 +121,5 @@ void main(){
 		std::cout << std::endl;
 	}
 	system("PAUSE");
+	return 0;
 }
