@@ -58,9 +58,11 @@ Pathfinding algorimths tend to be demonstraited with a graph rather than a grid,
 in order to update the cost between two tiles we must update both the tile and its neighbour.
 */
 void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
+	static int count = 1;
+	count++;
 	Tile* tile = getTileAt(x,y);
 
-	//printf("<%d, %d>\n", x, y);
+	printf("Updating <%d, %d> from %2.0lf to %2.0lf - Update: %d\n", x, y, tile->cost, newCost, count);
 	km += calculateH(previous);
 	previous = start;
 
@@ -70,7 +72,7 @@ void GridWorld::updateCost(unsigned int x, unsigned int y, double newCost){
 	double oldCost = tile->cost;	
 	double oldCostToTile, newCostToTile;
 	double currentRHS, otherG;
-	
+
 	//Update CURRENT by finding its new minimum RHS-value from NEIGHBOURS
 	for(Tile* neighbour : getNeighbours(tile)){
 		tile->cost = oldCost;

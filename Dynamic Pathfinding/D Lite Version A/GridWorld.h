@@ -47,6 +47,7 @@ public:
 	unsigned int size;
 	int radius;
 	double km;
+
 	Tile* start;
 	Tile* goal;
 	Tile* previous;
@@ -55,7 +56,6 @@ public:
 	std::vector<Tile* const> world;
 
 
-public:
 	GridWorld(unsigned int size, int radius);
 	void printWorld() const;
 	void updateCost(unsigned int x, unsigned int y, double cost);

@@ -10,7 +10,7 @@ const int INTERSECTION_RADIUS = 2;
 
 //How far the robot can look ahead when determining its next movement
 //To avoid any funny business, this value should be greater than INTERSECTION_RADIUS
-const int SCAN_RADIUS = 3;
+const int SCAN_RADIUS = 4;
 
 /*
 For testing purposes only, this array represents the "real map" to pathfind on.
@@ -81,7 +81,7 @@ void execute(){
 	world->computeShortestPath();
 
 	while (world->start != world->goal){
-		std::cout << "Iteration " << counter << std::endl;
+		std::cout << "Iteration " << counter;
 
 		if (world->start->rhs == INFINITY){
 			std::cout << "\tNO PATH EXIST" << std::endl;
@@ -101,7 +101,7 @@ void execute(){
 	}
 	
 	//Uncomment the line below to print every info about gridworld
-	world->printWorld();
+	//world->printWorld();
 }
 
 
@@ -115,7 +115,11 @@ void main(){
 
 		for (unsigned int y = 0; y < SIZE; y++){
 			for (unsigned int x = 0; x < SIZE; x++){
-				std::cout << realWorld[y*SIZE + x] << " ";
+				if (world->getTileAt(x, y)->cost == INFLATION){
+					std::cout << "^ ";
+				}else{
+					std::cout << realWorld[y*SIZE + x] << " ";
+				}				
 			}
 			std::cout << std::endl;
 		}
