@@ -29,7 +29,7 @@ GridWorld::GridWorld(unsigned int size, int radius){
 }
 
 /*
-This method handles the inflation of surrounding tiles. When an obsticle
+This method handles the PF_INFLATION of surrounding tiles. When an obsticle
 is detected, the surrounding tile's cost can be inflated to make the robot
 avoid getting anywhere near the obsticle. By the nature of pathfinding on
 grid maps, the resultant path tends to "hug the wall", however this will make
@@ -42,7 +42,7 @@ void GridWorld::inflate(unsigned int x, unsigned int y, double newCost){
 			if (abs(dy) + abs(dx) != 0){
 				Tile* t = getTileAt(x + dx, y + dy);
 				if (t != 0 && newCost > t->cost){
-					updateCost(x+dx, y+dy, INFLATION);
+					updateCost(x+dx, y+dy, PF_INFLATION);
 				}
 				
 			}
@@ -177,7 +177,7 @@ bool GridWorld::computeShortestPath(){
 			//Execution of this branch updates the tile during incremental search
 
 			previousG = otherG;
-			current->g = INFINITY;
+			current->g = PF_INFINITY;
 
 			//Update CURRENT'S RHS
 			if(current != goal){
@@ -272,14 +272,14 @@ bool GridWorld::compareKeys(const KeyPair& left, const KeyPair& right){
 
 GridWorld::TilePair GridWorld::getMinSuccessor(GridWorld::Tile*& tile){
 	Tile* minTile = 0;
-	double minCost = INFINITY;
+	double minCost = PF_INFINITY;
 
 	std::vector<Tile*> neighbours(getNeighbours(tile));
 	for (int i = 0; i < neighbours.size(); i++){
 		double cost = calculateC(tile, neighbours[i]);
 		double g = neighbours[i]->g;
 			
-		if(cost == INFINITY || g == INFINITY){
+		if(cost == PF_INFINITY || g == PF_INFINITY){
 			continue;
 		}
 			
@@ -304,8 +304,8 @@ double GridWorld::calculateH(GridWorld::Tile*& tile){
 }
 
 double GridWorld::calculateC(GridWorld::Tile*& tileA, GridWorld::Tile*& tileB){
-	if(tileA->cost == INFINITY || tileB->cost == INFINITY){
-		return INFINITY;
+	if(tileA->cost == PF_INFINITY || tileB->cost == PF_INFINITY){
+		return PF_INFINITY;
 	}
 
 	if(labs(tileA->x - tileB->x) + labs(tileA->y - tileB->y) == 2){
@@ -326,8 +326,8 @@ GridWorld::KeyPair GridWorld::calculateKey(GridWorld::Tile*& tile){
 GridWorld::Tile::Tile(unsigned int x, unsigned int y, double cost) : x(x), y(y){
 	this->cost = cost;
 
-	this->rhs = INFINITY;
-	this->g = INFINITY;
+	this->rhs = PF_INFINITY;
+	this->g = PF_INFINITY;
 	this->h = 0;
 
 	this->isOpen = false;
@@ -346,11 +346,11 @@ GridWorld::Tile::Tile(Tile& other) : x(other.x), y(other.y){
 void GridWorld::Tile::info() const{
 
 	printf("[(%d, %d)  H: %.2lf, G: %.2lf, RHS: %.2lf, K:<%.2lf, %.2lf>]", this->x, this->y,
-		this->h == INFINITY ? -1:this->h, 
-		this->g == INFINITY ? -1:this->g,
-		this->rhs == INFINITY ? -1:this->rhs, 
-		this->key.first == INFINITY ? -1:this->key.first,
-		this->key.second == INFINITY ? -1:this->key.second);
+		this->h == PF_INFINITY ? -1:this->h, 
+		this->g == PF_INFINITY ? -1:this->g,
+		this->rhs == PF_INFINITY ? -1:this->rhs, 
+		this->key.first == PF_INFINITY ? -1:this->key.first,
+		this->key.second == PF_INFINITY ? -1:this->key.second);
 }
 
 void GridWorld::printWorld() const{
@@ -366,9 +366,9 @@ void GridWorld::printWorld() const{
 	for (unsigned int y = 0; y < size; y++){
 		for (unsigned int x = 0; x < size; x++){
 			double cost = getTileAt(x, y)->cost;
-			if (cost == INFINITY){
+			if (cost == PF_INFINITY){
 				printf("-1 ");
-			}else if (cost == INFLATION){
+			}else if (cost == PF_INFLATION){
 				printf("^^ ");
 			}else{
 				printf("%2.0lf ", cost);
@@ -381,7 +381,7 @@ void GridWorld::printWorld() const{
 	std::cout << "G:" << std::endl;
 	for (unsigned int y = 0; y < size; y++){
 		for (unsigned int x = 0; x < size; x++){
-			printf("%2.0lf ", getTileAt(x,y)->g == INFINITY ? -1 : getTileAt(x,y)->g);
+			printf("%2.0lf ", getTileAt(x,y)->g == PF_INFINITY ? -1 : getTileAt(x,y)->g);
 		}
 		std::cout << std::endl;
 	}
@@ -389,7 +389,7 @@ void GridWorld::printWorld() const{
 	std::cout << "RHS:" << std::endl;
 	for (unsigned int y = 0; y < size; y++){
 		for (unsigned int x = 0; x < size; x++){
-			printf("%2.0lf ", getTileAt(x,y)->rhs == INFINITY ? -1 : getTileAt(x,y)->rhs);
+			printf("%2.0lf ", getTileAt(x,y)->rhs == PF_INFINITY ? -1 : getTileAt(x,y)->rhs);
 		}
 		std::cout << std::endl;
 	}

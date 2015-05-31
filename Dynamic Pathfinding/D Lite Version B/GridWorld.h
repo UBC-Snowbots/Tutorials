@@ -6,8 +6,8 @@
 #include <vector>
 #include <iostream>
 
-#define INFINITY INT_MAX
-#define INFLATION INT_MAX/2
+#define PF_INFINITY INT_MAX
+#define PF_INFLATION INT_MAX/2
 #define SQRT2 1.4142135623
 
 class GridWorld{

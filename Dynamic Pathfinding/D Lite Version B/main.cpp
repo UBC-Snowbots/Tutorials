@@ -57,10 +57,10 @@ void scanMap(){
 		for (int x = -SCAN_RADIUS; x <= SCAN_RADIUS; x++){
 			if (world->withinWorld(currentX + x, currentY + y)){
 				if (realWorld[(currentY + y)*SIZE + currentX + x] == 1
-					&& world->getTileAt(currentX + x, currentY + y)->cost < INFINITY){
+					&& world->getTileAt(currentX + x, currentY + y)->cost < PF_INFINITY){
 
 					printf("\tInconistancy between maps detected at %d %d\n", currentX + x, currentY + y);
-					world->inflate(currentX + x, currentY + y, INFINITY);
+					world->inflate(currentX + x, currentY + y, PF_INFINITY);
 				}
 			}
 		}
@@ -77,13 +77,13 @@ void execute(){
 	int counter = 0;
 
 	//Having a wall during normal search doesn't seem to cause any problems
-	//getTileAt(3,3)->cost = INFINITY;
+	//getTileAt(3,3)->cost = PF_INFINITY;
 	world->computeShortestPath();
 
 	while (world->start != world->goal){
 		std::cout << "Iteration " << counter;
 
-		if (world->goal->rhs == INFINITY){
+		if (world->goal->rhs == PF_INFINITY){
 			std::cout << "\tNO PATH EXIST" << std::endl;
 			break;
 		}
@@ -118,7 +118,7 @@ void main(){
 	
 	for (unsigned int y = 0; y < SIZE; y++){
 		for (unsigned int x = 0; x < SIZE; x++){
-			if (world->getTileAt(x, y)->cost == INFLATION){
+			if (world->getTileAt(x, y)->cost == PF_INFLATION){
 				std::cout << "^ ";
 			}else{
 				std::cout << realWorld[y*SIZE + x] << " ";
