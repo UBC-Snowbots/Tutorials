@@ -3,7 +3,8 @@
 GridWorld* world;
 
 //The dimensions of the square map
-const int SIZE = 20;
+const int LENGTH = 20;
+const int WIDTH = 20;
 
 //The minimum distance between the center of the robot and any obsticles
 const int INTERSECTION_RADIUS = 2;
@@ -20,7 +21,7 @@ map, call it "robot map", but its data is limited by how far it can see (SCAN_RA
 When pathfinding, the "robot map" should produce extra high cost obsticles 
 around an obsticle to account for the (INTERSECTION_RADIUS)
 */
-int realWorld[SIZE*SIZE] = {
+int realWorld[LENGTH*WIDTH] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -28,19 +29,19 @@ int realWorld[SIZE*SIZE] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0};
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+};
 
 
 /*
@@ -55,11 +56,16 @@ void scanMap(){
 	for (int y = -SCAN_RADIUS; y <= SCAN_RADIUS; y++){
 		for (int x = -SCAN_RADIUS; x <= SCAN_RADIUS; x++){
 			if (world->withinWorld(currentX + x, currentY + y)){
-				if (realWorld[(currentY + y)*SIZE + currentX + x] == 1 
+				if (realWorld[(currentY + y)*WIDTH + currentX + x] == 1 
 					&& world->getTileAt(currentX + x, currentY + y)->cost < PF_INFINITY){
 
-					printf("\tInconistancy between maps detected at %d %d\n", currentX+x, currentY+y);
+					printf("Inconistancy at %d %d when we're at %d %d\n", currentX+x, currentY+y, currentX, currentY);
 					world->inflate(currentX + x, currentY + y, PF_INFINITY);
+					printf("Updated entire path to: \n");
+					for (GridWorld::Coords c : world->getTraversal()){
+						printf("<%d, %d> ", c.first, c.second);
+					}
+					printf("\n");
 				}
 			}
 		}
@@ -80,7 +86,7 @@ void execute(){
 
 	world->computeShortestPath();
 
-	while (world->start != world->goal && counter < 40){
+	while (world->start != world->goal && counter < 100){
 		std::cout << "Iteration " << counter;
 
 		if (world->start->rhs == PF_INFINITY){
@@ -91,7 +97,7 @@ void execute(){
 		world->start = world->getMinSuccessor(world->start).first;
 		if (world->start != 0){
 			std::cout << "\tMoved to: (" << world->start->x << ", " << world->start->y << ")" << std::endl;
-			realWorld[world->start->y * SIZE + world->start->x] = 2;
+			realWorld[world->start->y * WIDTH+ world->start->x] = 2;
 		} else{
 			std::cout << "NULL SUCCESSOR" << std::endl;
 		}
@@ -108,21 +114,22 @@ void execute(){
 //Setting up the pathfinder etc...
 int main(){
 		std::cout << "Generating Map" << std::endl;
-		world = new GridWorld(SIZE, INTERSECTION_RADIUS);
+		world = new GridWorld(LENGTH, WIDTH, INTERSECTION_RADIUS, GridWorld::Coords(0,0), GridWorld::Coords(WIDTH - 1, LENGTH - 1));
 		std::cout << "Finished generation" << std::endl;
 		execute();
 		std::cout << "Path calculated!" << std::endl;
 
-		for (unsigned int y = 0; y < SIZE; y++){
-			for (unsigned int x = 0; x < SIZE; x++){
+		for (unsigned int y = 0; y < LENGTH; y++){
+			for (unsigned int x = 0; x < WIDTH; x++){
 				if (world->getTileAt(x, y)->cost == PF_INFLATION){
 					std::cout << "^ ";
 				}else{
-					std::cout << realWorld[y*SIZE + x] << " ";
+					std::cout << realWorld[y*WIDTH + x] << " ";
 				}				
 			}
 			std::cout << std::endl;
 		}
+
 		system("PAUSE");
 		return 0;
 }

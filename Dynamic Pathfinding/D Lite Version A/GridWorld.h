@@ -12,11 +12,11 @@
 
 class GridWorld{
 
-typedef std::pair<double, double> KeyPair;
+	typedef std::pair<double, double> KeyPair;
 
 public:
 	struct Tile{
-		const int x, y;
+		const unsigned int x, y;
 		double rhs, g, h, cost;
 		KeyPair key;
 		bool isOpen;
@@ -30,6 +30,7 @@ public:
 		void info() const;
 	};
 	typedef std::pair<GridWorld::Tile*, double> TilePair;
+	typedef std::pair<unsigned int, unsigned int> Coords;
 
 	bool withinWorld(unsigned int x, unsigned int y) const;
 	bool static compareKeys(const KeyPair& left, const KeyPair& right);
@@ -43,25 +44,27 @@ public:
 	KeyPair calculateKey(Tile*& tile);
 
 	Tile* getTileAt(unsigned int x, unsigned int y) const;
-	
+
 	TilePair getMinSuccessor(Tile*& tile);
 	std::vector<Tile*> getNeighbours(Tile*& tile);
 
 	//---------------------------------------------
-	unsigned int size;
+	unsigned int length;
+	unsigned int width;
 	int radius;
 	double km;
 
 	Tile* start;
 	Tile* goal;
 	Tile* previous;
-	
+
 	std::vector<Tile*> open;
 	std::vector<Tile*> world;
 
 
-	GridWorld(unsigned int size, int radius);
+	GridWorld(unsigned int length, unsigned int width, int radius, Coords start, Coords goal);
 	void printWorld() const;
 	void updateCost(unsigned int x, unsigned int y, double cost);
 	void inflate(unsigned int x, unsigned int y, double cost);
+	std::vector<Coords> getTraversal();
 };
