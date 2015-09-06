@@ -62,6 +62,12 @@
 										<li>
 												<a class="page-scroll" href="#Introduction">Intro</a>
 										</li>
+										<li>
+												<a class="page-scroll" href="#SampleCode">FizzBuzz</a>
+										</li>
+										<li>
+												<a class="page-scroll" href="#ROS">ROS</a>
+										</li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -77,7 +83,7 @@
                     <div class="col-md-8 col-md-offset-2">
                         <h1 class="brand-heading">Snowbots Tutorials</h1>
                         <p class="intro-text">Welcome to Snowbots<br>Here are the tutorials and resources to get you ready</p>
-                        <a href="#about" class="btn btn-circle page-scroll">
+                        <a href="#Getting Started" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
                     </div>
@@ -126,6 +132,19 @@
 										<h4><a href="http://www.ros.org/">ROS</a></h4><p>Runs our robot, and has a special build system build on top of CMake called Catkin. We also use this for everything.</p>
 </li></div>
 										</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="SampleCode" class="content-section text-center">
+	<div class = "container-fluid">
+	<div class = "body">
+		<h2>Code Samples for the FizzBuzz Challenge</h2>
+		<p>Below are the FizzBuzz challenges in Python and C++ for you to choose from. Pick your choice of language and read through it. The source code can also be downloaded from git by clicking the titles. Your exact tasks will be described underneath the code samples.</p>
+										<div class = "row text-left">
+										<div class = "col-md-6">
+										<h4><a href = "https://github.com/UBC-Snowbots/Snowflake/blob/master/src/tutorial/scripts/py">Python Sample</a></h4>
 										<pre><code>
 #!/usr/bin/env python
 import rospy
@@ -161,48 +180,68 @@ for n in range(1,101):
 	rospy.loginfo(message)
 	pub.publish(message)
 
-</code></pre>
-                </div>
-            </div>
-        </div>
-    </section>
+</code></pre></div> 
+				<div class = "col-md-6">
+					<h4><a href = "https://github.com/UBC-Snowbots/Snowflake/blob/master/src/tutorial/src/cpp.cpp">C++ Sample </a></h4>
+						<pre><code>
+						</code></pre>
+						</div></div>
+		<br><br>
+		<h4>Challenge 1: Extending FizzBuzz</h4>
+		<p>So, you've picked either C++ or Python, and you got it to compile/run. Now what? We want you to extend its behaviour.</p>
+		<p>The resulting program (PrimeBuzz) should perform exactly as it did originally, except when it encounters a prime number. Then, it should print “prime”, and only prime, except in the case where it would originally have printed “buzz”. Then, it should prepend “prime” to the original output.</p>
+		<div class = "row">
+		<div class = "col-md-2"></div>
+		<div class = "col-md-4 text-left">
+		<h4>Example Output: </h4><p> 3->Fizz<br>4->4<br>23->prime<br>7->prime<br>15->FizzBuzz<br>11->prime<br>21->fizz<br>8->8</p>
+		</div>
+		<div class = "col-md-6 text-left">
+		<h4>Bonus points for unit-tested solutions. <br>Good frameworks for this are:</h4>
+		<p><a href="https://github.com/philsquared/Catch">CATCH for C++</a>
+</p>
+		<p><a href="https://code.google.com/p/googletest/">gtest, also for C++ </a>
+</p>
+		<p><a href=" https://docs.python.org/2/library/unittest.html">The built-in unit-test for Python </a>
+</p>
+		</div>
+		</div><!--/div for "row"-->
+		
 
-<section id="sponsors" class="content-section text-center">
+		<h4>Challenge 2: ROS Integration</h4>
+		<p>If you can do this without coming to the first session, that's great! Bring any materials you have to the session and give us a demo, we would love to have a look at how you did it.</p>
+		<p>Otherwise, this is basically a sneak peek at the set-up tasks you need to do before you can sign up for a project:</p>
+		<div class= "col-md-2"></div>
+		<div class = "col-md-8 text-left">
+		<p>1. Get ROS working<br>2. Get comfortable making nodes, testing nodes, reading the documentation, etc...<br>2. Make PrimeBuzz work as a ROS node
+</p></div>
+	</div></div>
+</section>
+
+<section id="ROS" class="content-section text-center">
         <div class="project-section">
             <div class="container">
                 <div class="body">
-                    <h2>Sponsors</h2>
-		    <div class = "row">
-				<div class = "col-md-4">
-					<h4>UBC Engineering</h4>
-					<p>The University of British Columbia is our main sponsor, housing the team and the robot</p>
-				</div>
-			<div class = "col-md-4">
-				<h4>Swift Navigation</h4>
-				<p>Aiming to provide affordable and accurate GPS modules. Swift Nav provide us with our GPS modules</p>
-			</div>
-				<div class = "col-md-4">
-					<h4>Venom</h4>
-					<p>Experts at recharable power systems. Venom is our provider of Li-po batteries</p>
-				</div>
-              </div>
-		   <div class = "row">
-			<div class = "col-md-4">
-				<h4>Viking Profiles</h4>
-				<p>Viking Profiles, waterjet cutting since 1997, producer of our chassis</p>
-			</div>
-			<div class = "col-md-4">
-				<h4>Shell</h4>
-				<p>Being a mining engineering team, Shell's support for the team helped make the robot possible</p>
-			</div>
-			<div class = "col-md-4">
-				<h4>Fluor</h4>
-				<p>Thanks to Fluor's donations this year, Snowbots was able to complete the robot and head off to competition with ease.</p>
-			</div>
+                   <h2>Resources on Integration with ROS</h2>
+										<h4>Setting up Git</h4>
+										<p>[insert links]</p>
+										<h4>Setting up a ROS environment</h4>
+	<p>We recommend using the Vagrant environment we provide on the Git repository for building. [insert more content here when Finn has built/tested the Vagrant environment]</p><p>
+For the hardy, here is a link to the ROS website where you can get ROS working some other way: [insert link here]
+</p>
+										<h4>Notes on porting to ROS</h4>
+										<p>So, your PrimeBuzz works on the command-line, but what about as a ROS node? Your challenge is to make it run under ROS as a node, with exactly how this happens left to your discretion. Style points are involved, as the point of this is to help us get to know each other as programmers, and to see how we cope with the kind of things we will have to do throughout the year.</p><p>
+The main thing we have in mind is that your design should be reasonably flexible, readable and future-proof. If you do not feel like you could come back to your code in a month and fix some obscure bug, either you can try refactoring it so it is more readable, or if there's something strange or unintuitive you need to do for it to work, commenting your rationale on the line above said thing can work too.</p><p>
+If you have a question or get stuck, come find me (Finn) at the first session and we can go from there. This challenge is designed to extend into at least the second session, and is a catalyst for open debate, not a test.
+</p>
+										<h4>Unit Testing</h4>
+										<p>Bonus points for unit tests are still a thing for challenge 2 – try having a look at <a href = "http://wiki.ros.org/rostest">http://wiki.ros.org/rostest</a>. We hope to keep this practice going for the entire project. If you remember CPSC 110 too well, then maybe the later stages of this project can help you see unit/integration/regression tests for how helpful they really are. Not having them has proven painful in almost all long-term projects in which I have been involved – ask me for examples. (seriously, I like storytelling)
+</p>
                     </div>
             </div>
         </div>
-    </section>
+</section>
+
+
     <!-- Contact Section -->
     <section id="contact" class="container content-section text-center">
         <div class="row">
