@@ -147,7 +147,7 @@ a:focus {
     padding: 100px 0;
     text-align: center;
     color: #fff;
-    background: url(../img/intro-bg.jpg) no-repeat bottom center scroll;
+    background: url(../img/arduino.jpg) no-repeat bottom center scroll;
     background-color: #000;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -263,7 +263,7 @@ a:focus {
 
 .download-section {
     width: 100%;
-		height: 700px;
+		min-height: 700px;
     background: url(../img/team_pic.jpg) center, no-repeat ;
     background-size: cover;
     -webkit-background-size: cover;
