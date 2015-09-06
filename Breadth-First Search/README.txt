@@ -1,9 +1,0 @@
-Doesn't compile yet, still needs fixing up in the node.h and node.cpp files.
-
-An example of breadth first search.
-
-TERMINAL compile with:
-g++ -o bfs node.cpp bfs.cpp -I.
-
-TERMINAL run with:
-./bfs
