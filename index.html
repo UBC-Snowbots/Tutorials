@@ -223,11 +223,11 @@ int main(){
 		<br><br>
 		<h2>Challenge 1: Extending FizzBuzz</h2>
 		<p>So, you've picked either C++ or Python, and you got it to compile/run. Now what? We want you to extend its behaviour.</p>
-		<p>The resulting program (PrimeBuzz) should perform exactly as it did originally, except when it encounters a prime number. Then, it should print “prime”, and only prime, except in the case where it would originally have printed “buzz” or "fizz" . Then, it should prepend “prime” to the original output. (eg. 3 originally was "fizz", thus it should now print "primefizz")</p>
+		<p>The resulting program (PrimeBuzz) should perform exactly as it did originally, except when it encounters a prime number. Then, it should print “prime”, and only prime, except in the case where it would originally have printed “buzz” or "fizz" . Then, it should prepend “prime” to the original output. (eg. 3 originally was "fizz", thus it should now print "prime")</p>
 		<div class = "row">
 		<div class = "col-md-2"></div>
 		<div class = "col-md-4 text-left">
-		<h4>Example Output: </h4><p> 3->Fizz<br>4->4<br>23->prime<br>7->prime<br>15->FizzBuzz<br>11->prime<br>21->fizz<br>8->8</p>
+		<h4>Example Output: </h4><p> 3->prime<br>4->4<br>23->prime<br>7->prime<br>15->FizzBuzz<br>11->prime<br>21->fizz<br>8->8</p>
 		</div>
 		<div class = "col-md-6 text-left">
 		<h4>Bonus points for unit-tested solutions. <br>Good frameworks for this are:</h4>
@@ -242,12 +242,23 @@ int main(){
 		
 
 		<h2>Challenge 2: ROS Integration</h2>
-		<p>If you can do this without coming to the first session, that's great! Bring any materials you have to the session and give us a demo, we would love to have a look at how you did it.</p>
-		<p>Otherwise, this is basically a sneak peek at the set-up tasks you need to do before you can sign up for a project:</p>
-		<div class= "col-md-2"></div>
-		<div class = "col-md-8 text-left">
-		<p>1. Get ROS working<br>2. Get comfortable making nodes, testing nodes, reading the documentation, etc...<br>2. Make PrimeBuzz work as a ROS node
-</p></div>
+		<p>Now that you have your original code working, your next challenge is as follows:</p>
+		<p>1. Get ROS working<br>2. Get comfortable making nodes, testing nodes, reading the documentation, etc...<br>3. Make PrimeBuzz work as a ROS node
+</p>
+		<p></p>
+		<p>To do this, we suggest you read some of the <a href="http://wiki.ros.org/ROS/Tutorials">ROS documentation</a>. To finish the challenge, you will want to know about <a href="http://wiki.ros.org/ROS/Tutorials/UnderstandingNodes">running nodes</a>, creating Publishers and Subscribers (<a href="http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29">C++</a>/<a href="http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28python%29">Python</a>), creating Service providers (<a href="http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29">C++</a>/<a href="http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28python%29">Python</a>), and the helpful ROS command-line tools <a href="http://wiki.ros.org/rostopic">rostopic</a> and <a href="http://wiki.ros.org/rosservice">rosservice</a>.</p>
+		<h3>What do you mean by "work as a ROS node"?</h3>
+		<p>To clarify exactly what "make PrimeBuzz work as a ROS node" means, we mean that your solution to Challenge 1 should start as a ROS node, emit its output as ROS messages (for Python) or provide a ROS service that returns the correct output (for C++, due to issues where messages published immediately on startup getting lost), and then shut down (or wait until it is killed, using Ctrl^C).</p>
+		<p>We will be looking at your node's output in a separate terminal using either rosservice or rostopic, and will expect to see some form of the FizzBuzzPrime output. Creative solutions different from those we have described here are welcome.</p>
+		<h3>FAQ</h3>
+		<h4>Where's my catkin workspace?</h4>
+		<p>Don't worry about creating a catkin workspace, the vagrant up script does it for you. Once you do <code>$ vagrant ssh</code>, you are already inside your catkin workspace.</p>
+		<h4>How do I sync files to the VM and back?</h4>
+		<p>Any modifications you make to <code>Snowflake/src</code> will be automatically synced to your Vagrant VM's <code>~/src</code> folder (and vice versa). The idea is that you can then edit in your main environment, and only use the Vagrant VM to compile and run your code. For more technical details as to what exactly makes this happen, take a look in <code>Snowlfake/cookbooks/snowbots/recipes/defaults.rb</code>, and take a look at the <a href="https://docs.vagrantup.com/v2/synced-folders/index.html">Vagrant documentation</a>.</p>
+		<h4>Where do I start?</h4>
+		<p>Our repository currently contains a single package called tutorial, which contains two nodes (creatively named cpp and py) that are Finn's attempts at solving Challenge 2. To start, you can try running these nodes and checking their output using <a href="http://wiki.ros.org/rosservice">rosservice</a> and <a href="http://wiki.ros.org/rostopic">rostopic</a>. cpp is supposed to provide a service called "prime_request", and py publishes messages on a topic called "primes".</p>
+		<h4>Why can't rosrun see my nodes?</h4>
+		<p>For ROS to be aware of any new nodes, messages or services you write, you need to run <code>$ source devel/setup.sh</code> in your VM's home folder, once in each terminal you have open.<p>
 	</div></div>
 </section>
 
