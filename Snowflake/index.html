@@ -66,7 +66,7 @@
 												<a class="page-scroll" href="#Introduction">Installation</a>
 										</li>
 										<li>
-												<a class="page-scroll" href="#ROS">ROS</a>
+												<a class="page-scroll" href="#SampleCode">Verification</a>
 										</li>
 										<li>
 												<a class ="page-scroll" href="#contact">Completion</a>
@@ -129,31 +129,59 @@
                   <p>Open Git (aka. git-bash), and you should see the following</p>
                   <img src = "http://puu.sh/kanBg/95d7e03608.png"><br><br>
                   <!--If at any point the puush links expire, the same images can be found in the ../img folder -->
+
                   <h3>Step 1: Navigate into the location you want to put your files</h3>
                   <p>eg. If you want to put things into your D:\ drive, <code>$cd /D</code></p>
                   <p>In my example case, I am putting things on my desktop</p>
                   <img src ="http://puu.sh/kanTA/af2b3deb2f.png"><br><br>
+
                   <h3>Step 2: Clone the <a href ="https://github.com/UBC-Snowbots/Snowflake">Snowbots repository</a></h3>
                   <p>The reason you have to perform this action is because the Vagrant image file is located in the repo</p>
                   <p>Tip: You can paste into git-bash by pressing <code>Insert</code></p>
                   <img src ="http://puu.sh/kao3n/ec0512f63a.png"><br><br>
+
                   <h3>Step 3: Navigate into the folder with the cloned files</h3>
                   <p>To do that, you use the <code>$ cd</code> command again</p>
                   <p>After you <code>$cd Snowflake</code>, typing in <code>$ls</code> should show you a list of the files like this:</p>
                   <img src ="http://puu.sh/kaoiS/0322e03801.png"><br><br>
+
                   <h3>Step 4: Vagrant up</h3>
                   <p>Next you will run Vagrant to create a virtual box with our image</p>
                   <img src ="http://puu.sh/kaoqA/858c4278b8.png"><br><br>
                   <p>Allow the program to download the virtual box and adjust it according to our image file</p>
-                  <h3>Step 5: SSH into your box</h3>
+                  <p>In the process, you should see a bunch of green text, that means it is working. So sit back, relax and wait for the <code>$ </code> terminal prompt to show up again </p>
+                  <img src ="http://puu.sh/kap7J/732506bee6.png"><br><br>
 
+                  <h3>Step 5: SSH into your box</h3>
+                  <p>Next we will SSH into your virtual machine</p>
+                  <img src= "http://puu.sh/kape3/9080ece40b.png"><br><br>
+                  <p>At this point you are done with the installation process!</p>
+                </div>
+              </div>
 
     </section>
 
 <section id="SampleCode" class="content-section text-center">
 	<div class = "container-fluid">
 	<div class = "body">
+        <h2>Verification</h2>
+        <p>Now that you can SSH into your virtual box, we can check to see if it has been installed properly. </p>
+        <h3>Step 1: Check to see if the files are there</h3>
+        <img src = "http://puu.sh/kapqU/1fb0248254.png"><br><br>
 
+        <h3>Step 2: Lets try to compile the programs with the ROS toolchain</h3>
+        <p>We will use the <code>$ catkin_make </code> command</p>
+        <img src = "http://puu.sh/kapxC/0f39082de9.png"><br><br>
+
+        <h3>Step 3: Write into a text file</h3>
+        <p>Try to navigate into the <code> /src </code> folder and find a file called <code> NewMembers.txt</code> and write your name on it. </p>
+        <p>You can edit the file anyway you want, but to demonstrate, I <code>$ echo "my_name" > NemMembers.txt</code></p>
+        <p>You can always just open the text file with your preferred text editor</p>
+        <p>You can then see your name within the file when you <code>$ cat NewMembers.txt</code></p>
+        <img src = "http://puu.sh/kapR7/a8b877c524.png"><br><br>
+
+        <h3>Step 4: Push to repository</h3>
+        <p>Now we want to merge your changes into our repository at the next meeting, though you do not have access right now, I will show you how it will be done</p>
 		</div>
 		</div><!--/div for "row"-->
 
