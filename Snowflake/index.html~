@@ -60,13 +60,13 @@
                         <a class = "page-scroll" href="#page-top">Top</a>
                     </li>
 										<li>
-												<a class="page-scroll" href="#Introduction">Intro</a>
+												<a class="page-scroll" href="#GettingStarted">Prereqs</a>
 										</li>
 										<li>
-												<a class="page-scroll" href="#SampleCode">The Challenges</a>
+												<a class="page-scroll" href="#Introduction">Installation</a>
 										</li>
 										<li>
-												<a class="page-scroll" href="#ROS">ROS</a>
+												<a class="page-scroll" href="#SampleCode">Verification</a>
 										</li>
 										<li>
 												<a class ="page-scroll" href="#contact">Completion</a>
@@ -84,8 +84,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-                        <h1 class="brand-heading">Snowbots Tutorials</h1>
-                        <p class="intro-text">Welcome to Snowbots<br>Here are the tutorials and resources to get you ready</p>
+                        <h1 class="brand-heading">Installing Vagrant</h1>
+                        <p class="intro-text">Following are instructions and screen caps of the Vagrant setup process</p>
                         <a class="btn btn-circle page-scroll" href="#GettingStarted" >
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
@@ -99,181 +99,98 @@
     <section id="GettingStarted" class="container content-section text-center">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
-                <h2>Getting Started</h2>
-                <p>This year we have built a set of challenges and tutorials to better help new members ease into the workflow of Snowbots. </p>
-								<p>These challenges are here to get us all up to speed on each others' abilities, experience, and what we still need to learn. Basic assumptions made are that you can clear the first challenge on your own by looking things up online. Otherwise, we do not expect you to have much experience in API design or unit testing coming in, though if you do know all this, great! Regardless of your background, we are here to improve and learn from each other as a group. Debate and questions, especially disagreeing with us if something looks strange, are welcome.
-</p><br>
-						<h4> The timeline for the start of this year is:</h4>
-						<p>1. By the first meeting (Sept. 12): Had a go at completing Challenge 1</p>
-						<p>2. During first meeting go over Challenges, ask questions, get help </p>
-						<p>3. Have Finn check both Challenges before signing up to your project  </p> 
+                <h2>Prerequisites</h2>
+                <p>The following is a list of things you would have to have intstalled to be able to set up your Snowbots workspace.</p>
             </div>
+            <div class = "row">
+            <div class = "col-lg-4">
+            <h3><a href = "http://git-scm.com/downloads">Git</a></h3>
+            <p>Download for the corresponding native OS that you are running the virtual machine on.</p>
+            </div>
+            <div class = "col-lg-4">
+            <h3><a href = "https://www.virtualbox.org/wiki/Download_Old_Builds_4_3">Virtual Box</a></h3>
+            <p>It is very important that you are installing v4.3 instead of the newest version as Vagrant is not compatible</p>
+            </div>
+            <div class = "col-lg-4">
+            <h3><a href ="https://www.vagrantup.com/downloads.html">Vagrant</a></h3>
+            <p>Like Git please download according to your native OS. eg.Windows, download the .msi package, Mac download the .dmg package</p>
+            </div>
+            <br>
+            </div>
+            <p>Please install these 3 programs in order from left to right and restart your computer after the Vagrant installation daemon prompts you to.</p>
         </div>
     </section>
 
     <section id="Introduction" class="content-section text-center">
             <div class="container-fluid">
                 <div class="col-lg-8 col-lg-offset-2">
-									<h2>Introduction to the Challenge</h2>
-										<h4>The Fizz Buzz</h4>
-										<p>For challenge 1, we thought it we would be boring to just have you solve FizzBuzz or some other simple problem, so to get you comfortable working with existing code, here are a couple of solutions to FizzBuzz, in C++ and Python. We want you to run these and see what they do, then extend them.</p>
+									<h2>Installation</h2>
+                  <p>The rest of the Vagrant setup process will take place in the git terminal</p>
+                  <p>Open Git (aka. git-bash), and you should see the following</p>
+                  <img src = "http://puu.sh/kanBg/95d7e03608.png"><br><br>
+                  <!--If at any point the puush links expire, the same images can be found in the ../img folder -->
 
-										<h4>Code Samples for the FizzBuzz Challenge</h4>
-		<p>Below are the FizzBuzz challenges in Python and C++ for you to choose from. Pick your choice of language and read through it. The source code can also be downloaded from git by clicking the titles. Your exact tasks will be described underneath the code samples.</p>
-										<div class = "row text-left">
-										<div class = "col-md-6">
-										<h4><a href = "https://github.com/UBC-Snowbots/Snowflake/blob/Tutorial/src/tutorial/scripts/py">Python Sample</a></h4>
-										<pre><code>
-import sys
+                  <h3>Step 1: Navigate into the location you want to put your files</h3>
+                  <p>eg. If you want to put things into your D:\ drive, <code>$cd /D</code></p>
+                  <p>In my example case, I am putting things on my desktop</p>
+                  <img src ="http://puu.sh/kanTA/af2b3deb2f.png"><br><br>
 
-for n in range(1,101):
-	fizzbuzz = False
-	if n % 3 == 0:
-		fizzbuzz = True
-		sys.stdout.write('fizz')
-	if n % 5 == 0:
-		fizzbuzz = True
-		sys.stdout.write('buzz')
-	if not fizzbuzz:
-		sys.stdout.write(str(n))
-	sys.stdout.write('\n')
+                  <h3>Step 2: Clone the <a href ="https://github.com/UBC-Snowbots/Snowflake">Snowbots repository</a></h3>
+                  <p>The reason you have to perform this action is because the Vagrant image file is located in the repo</p>
+                  <p>Tip: You can paste into git-bash by pressing <code>Insert</code></p>
+                  <img src ="http://puu.sh/kao3n/ec0512f63a.png"><br><br>
 
+                  <h3>Step 3: Navigate into the folder with the cloned files</h3>
+                  <p>To do that, you use the <code>$ cd</code> command again</p>
+                  <p>After you <code>$cd Snowflake</code>, typing in <code>$ls</code> should show you a list of the files like this:</p>
+                  <img src ="http://puu.sh/kaoiS/0322e03801.png"><br><br>
 
+                  <h3>Step 4: Vagrant up</h3>
+                  <p>Next you will run Vagrant to create a virtual box with our image</p>
+                  <img src ="http://puu.sh/kaoqA/858c4278b8.png"><br><br>
+                  <p>Allow the program to download the virtual box and adjust it according to our image file</p>
+                  <p>In the process, you should see a bunch of green text, that means it is working. So sit back, relax and wait for the <code>$ </code> terminal prompt to show up again </p>
+                  <img src ="http://puu.sh/kap7J/732506bee6.png"><br><br>
 
-
-
-
-
-
-
-
-</code></pre></div> 
-				<div class = "col-md-6">
-					<h4><a href = "https://github.com/UBC-Snowbots/Snowflake/blob/Tutorial/src/Tutorial/src/cpp.cpp">C++ Sample </a></h4>
-						<pre><code>
-#include &ltiostream&gt
-#include &ltcstdlib&gt
-
-int main(){
-	for(int i = 0; i < 101; ++i){
-		bool fizzbuzz = false;
-		if(i % 3 == 0){
-			fizzbuzz = true;
-			std::cout << "fizz";
-		}
-		if(i % 5 == 0){
-			fizzbuzz = true;
-			std::cout << "buzz";
-		}
-		if(!fizzbuzz){
-			std::cout << i;
-		}
-		std::cout << '\n';
-	}
-	return EXIT_SUCCESS;
-}
-
-						</code></pre>
-						</div></div>
-<br><br>
-										<h4>References and Resources</h4>
-										<p>A good reference for C++ can be found here: <a href ="http://www.cplusplus.com">http://www.cplusplus.com/</a>. It has up-to-date, standards-compliant information, and is my go-to 'reference book'. It also has a tutorial, though I'm sure you can find one if that's what you're looking for.</p>
-										<p>Python has some of the best documentation I have ever seen: <a href = "http://www.python.org/doc/"> https://www.python.org/doc/</a>. This covers from the basics to the deepest technicalities of the language and all its built-in modules.
-</p>
-										<div class = "row"> 
-										<p>Here are a few methods that are commonly used to compile code with</p>
-										<div class = "col-md-4">
-										<h4><a href = "http://wiki.ros.org/catkin/Tutorials">ROS catkin</a></h4>
-										<p>ROS catkin is a set of macros built into ROS for managing code. This is the primary tool we use for code compilation in Snowbots.</p>
-										</div>	
-										<div class = "col-md-4">
-										<h4><a href = "http://www.cprogramming.com/g++.html">g++</a> and <a href ="https://gcc.gnu.org/">gcc</a></h4>
-										<p>Here are the standard c and c++ compilers you can find in linux systems. Either click on the link or try $man g++ in the terminal. ($man is a very helpful command in linux)</p>
-										</div>
-										<div class = "col-md-4">
-										<h4><a href ="http://linux.die.net/man/1/python">Python terminal</a></h4>
-										<p>The link is the manual page to python for terminals. Look there to see how you can run your .py scripts</p>
-										</div>								
-										</div>
-										<p>Interesting libraries/systems we may sometimes use, so you can look up what's in store, and more importantly learn how to use these as we work throughout the year:</p>
-			
-										<div class = "row">
-										<div class = "col-md-6">	
-										<h4><a href="http://www.boost.org">Boost</a></h4><p>Makes some C++ much easier to read/write. (iterators are awesome – the adventurous may try to rewrite the C++ version below using it)</p></div>
-</li>
-										<div class = "col-md-6">
-										<h4><a href = "http://arma.sourceforge.net/download.html">Armadillo </a></h4><p>For that moment when you are tempted to write out the full, gory details of a matrix/other math operation in C++.
-</p></div></div>
-										<div class = "row">
-										<div class = "col-md-6">
-										<h4><a href="http://www.cmake.org/documentation/">CMake</a></h4><p>Automates building and configuring software across platforms and computers. We use this for everything.</p>
-</li></div>
-										<div class = "col-md-6">
-										<h4><a href="http://www.ros.org/">ROS</a></h4><p>Runs our robot, and has a special build system build on top of CMake called Catkin. We also use this for everything.</p>
-</li></div>
-										</div>
-
+                  <h3>Step 5: SSH into your box</h3>
+                  <p>Next we will SSH into your virtual machine</p>
+                  <img src= "http://puu.sh/kape3/9080ece40b.png"><br><br>
+                  <p>At this point you are done with the installation process!</p>
                 </div>
-            </div>
+              </div>
+
     </section>
 
 <section id="SampleCode" class="content-section text-center">
 	<div class = "container-fluid">
 	<div class = "body">
-		<br><br>
-		<h2>Challenge 1: Extending FizzBuzz</h2>
-		<p>So, you've picked either C++ or Python, and you got it to compile/run. Now what? We want you to extend its behaviour.</p>
-		<p>The resulting program (PrimeBuzz) should perform exactly as it did originally, except when it encounters a prime number. Then, it should print “prime”, and only prime, except in the case where it would originally have printed “buzz”. Then, it should prepend “prime” to the original output.</p>
-		<div class = "row">
-		<div class = "col-md-2"></div>
-		<div class = "col-md-4 text-left">
-		<h4>Example Output: </h4><p> 3->Fizz<br>4->4<br>23->prime<br>7->prime<br>15->FizzBuzz<br>11->prime<br>21->fizz<br>8->8</p>
-		</div>
-		<div class = "col-md-6 text-left">
-		<h4>Bonus points for unit-tested solutions. <br>Good frameworks for this are:</h4>
-		<p><a href="https://github.com/philsquared/Catch">CATCH for C++</a>
-</p>
-		<p><a href="https://github.com/google/googletest">gtest, also for C++ </a>
-</p>
-		<p><a href=" https://docs.python.org/2/library/unittest.html">The built-in unittest for Python </a>
-</p>
+        <h2>Verification</h2>
+        <p>Now that you can SSH into your virtual box, we can check to see if it has been installed properly. </p>
+        <h3>Step 1: Check to see if the files are there</h3>
+        <img src = "http://puu.sh/kapqU/1fb0248254.png"><br><br>
+
+        <h3>Step 2: Lets try to compile the programs with the ROS toolchain</h3>
+        <p>We will use the <code>$ catkin_make </code> command</p>
+        <img src = "http://puu.sh/kapxC/0f39082de9.png"><br><br>
+          <!--
+        <h3>Step 3: Write into a text file</h3>
+        <p>Try to navigate into the <code> /src </code> folder and find a file called <code> NewMembers.txt</code> and write your name on it. </p>
+        <p>You can edit the file anyway you want, but to demonstrate, I <code>$ echo "my_name" > NemMembers.txt</code></p>
+        <p>You can always just open the text file with your preferred text editor</p>
+        <p>You can then see your name within the file when you <code>$ cat NewMembers.txt</code></p>
+        <img src = "http://puu.sh/kapR7/a8b877c524.png"><br><br>
+
+        <h3>Step 4: Push to repository</h3>
+        <p>Now we want to merge your changes into our repository at the next meeting, though you do not have access right now, I will show you how it will be done</p>
+        <p>To do "git stuff" (version control). We have to first exit our virtual machine. To do that we will use the <code>$ exit </code> command</p>
+        <img src ="http://puu.sh/kaqjQ/e7c2006ec0.png"><br><br>
+        <p>Now you can see that the terminal prompt has returned to the git-bash terminal prompt. Which means we are back in the directory of our native machine.</p>
+        <p>So if we <code>$cd</code> into <code>/src</code> we can see the file there.</p> -->
 		</div>
 		</div><!--/div for "row"-->
-		
 
-		<h2>Challenge 2: ROS Integration</h2>
-		<p>If you can do this without coming to the first session, that's great! Bring any materials you have to the session and give us a demo, we would love to have a look at how you did it.</p>
-		<p>Otherwise, this is basically a sneak peek at the set-up tasks you need to do before you can sign up for a project:</p>
-		<div class= "col-md-2"></div>
-		<div class = "col-md-8 text-left">
-		<p>1. Get ROS working<br>2. Get comfortable making nodes, testing nodes, reading the documentation, etc...<br>2. Make PrimeBuzz work as a ROS node
-</p></div>
-	</div></div>
-</section>
 
-<section id="ROS" class="content-section text-center">
-        <div class="project-section">
-            <div class="container">
-                <div class="body">
-                   <h2>Resources on Integration with ROS</h2>
-										<h4>Setting up Git</h4>
-										<p>Getting Started with <a href = "https://www.codecademy.com/courses/learn-the-command-line">terminal</a><br>
-										Github's Instructions to Setting Up <a href = "https://help.github.com/articles/set-up-git/">Git</a></p>
-										<h4>Setting up a ROS environment</h4>
-	<p>We recommend using the Vagrant environment we provide on the Git repository for building. <a href = "https://github.com/UBC-Snowbots/Snowflake">Instructions to setting up the Vagrant environment.</a></p><p>
-For the hardy, here is a link to the ROS website where you can get ROS working some other way: <a href = "http://wiki.ros.org/indigo/Installation">The Version Snowbots uses is Indigo.</a>
-</p>
-										<h4>Notes on porting to ROS</h4>
-										<p>So, your PrimeBuzz works on the command-line, but what about as a ROS node? Your challenge is to make it run under ROS as a node, with exactly how this happens left to your discretion. Style points are involved, as the point of this is to help us get to know each other as programmers, and to see how we cope with the kind of things we will have to do throughout the year.</p><p>
-The main thing we have in mind is that your design should be reasonably flexible, readable and future-proof. If you do not feel like you could come back to your code in a month and fix some obscure bug, either you can try refactoring it so it is more readable, or if there's something strange or unintuitive you need to do for it to work, commenting your rationale on the line above said thing can work too.</p><p>
-If you have a question or get stuck, come find me [Finn] at the first session and we can go from there. This challenge is designed to extend into at least the second session, and is a catalyst for open debate, not a test.
-</p>
-										<h4>Unit Testing</h4>
-										<p>Bonus points for unit tests are still a thing for challenge 2 – try having a look at <a href = "http://wiki.ros.org/rostest">http://wiki.ros.org/rostest</a>. We hope to keep this practice going for the entire project. If you remember CPSC 110 too well, then maybe the later stages of this project can help you see unit/integration/regression tests for how helpful they really are. Not having them can cause several types of pain in longer-term projects. (ask me [Finn] for examples if you like)
-</p>
-                    </div>
-            </div>
-        </div>
+
 </section>
 
 
@@ -281,8 +198,8 @@ If you have a question or get stuck, come find me [Finn] at the first session an
     <section id="contact" class="container content-section text-center">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
-                <h2>Finished?</h2>
-                <p>Once you are done, please bring it to the next meeting you attend, or mail it in to us at our email!</p>
+                <h2>Questions</h2>
+                <p>If you have any questions please feel free to contact any of the software members! Or Email us any concerns you have @:</p>
                 <p><a href="mailto:snowbots.ubc@gmail.com">snowbots.ubc@gmail.com</a>
                 </p>
                 <ul class="list-inline banner-social-buttons">
@@ -321,8 +238,8 @@ If you have a question or get stuck, come find me [Finn] at the first session an
     <script type="../text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5yKLhVTvvpUrobkzxIUyR2VAujTgYQF4"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="js/grayscale.js"></script>
-		<script>hljs.initHighlightingOnLoad();</script>	
+    <script src="../js/grayscale.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
 
 </body>
 
