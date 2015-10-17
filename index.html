@@ -262,6 +262,8 @@ int main(){
 		<p>Our repository currently contains a single package called tutorial, which contains two nodes (creatively named cpp and py) that are Finn's attempts at solving Challenge 2. To start, you can try running these nodes and checking their output using <a href="http://wiki.ros.org/rosservice">rosservice</a> and <a href="http://wiki.ros.org/rostopic">rostopic</a>. cpp is supposed to provide a service called "prime_request", and py publishes messages on a topic called "primes".</p>
 		<h4>Why can't rosrun see my nodes?</h4>
 		<p>For ROS to be aware of any new nodes, messages or services you write, you need to run <code>$ source devel/setup.sh</code> in your VM's home folder, once in each terminal you have open.<p>
+		<h4> Why is a turlesim not showing up? </h4>
+		<p> You need to have X forwarding enabled for any GUI based things to show up. Instead of typing vagrant ssh type: ssh -X -p 2222 vagrant@127.0.0.1 	</p>
 	</div></div>
 </section>
 
